@@ -1,0 +1,10 @@
+{
+    "id": "dungeon-generator",
+    "name": "Dungeon Generator",
+    "version": "1.0.0",
+    "minAppVersion": "0.15.0",
+    "description": "Generate customizable dungeon maps for tabletop RPGs",
+    "author": "IronJade",
+    "authorUrl": "gitgub.com/IronJade",
+    "isDesktopOnly": false
+}
