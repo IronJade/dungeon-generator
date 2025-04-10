@@ -508,7 +508,6 @@ export class DungeonGenerator {
      * Place doors at appropriate hallway-room junctions
      */
     private placeDoors(rooms: Room[], grid: boolean[][]): void {
-        // Go through each room's pathsTo entries to place doors
         rooms.forEach(room => {
             if (!room.pathsTo) return;
             
@@ -516,42 +515,76 @@ export class DungeonGenerator {
                 const targetRoom = rooms.find(r => r.id === pathInfo.roomId);
                 if (!targetRoom) return;
                 
-                // Find the cells where the path meets the room (potential door locations)
-                const doorLocations = this.findDoorLocations(room, targetRoom, pathInfo.path, grid);
+                // Find precise door locations where the path meets the room
+                const doorLocations = this.findPreciseDoorLocations(room, targetRoom, pathInfo.path, grid);
                 
-                // Add doors if valid locations found
                 if (doorLocations.length > 0) {
-                    // Use the first valid door location (closest to the path start)
-                    const doorLocation = doorLocations[0];
-                    
-                    // Determine if this door is horizontal or vertical
-                    const isHorizontal = this.isDoorHorizontal(doorLocation, room);
-                    
-                    // Add the door to the room
-                    if (!room.doors) room.doors = [];
-                    room.doors.push({
-                        x: doorLocation.x,
-                        y: doorLocation.y,
-                        isHorizontal: isHorizontal,
-                        connectsTo: targetRoom.id
+                    doorLocations.forEach(doorLocation => {
+                        // Determine door orientation more precisely
+                        const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
+                        
+                        // Add door to both rooms
+                        this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
+                        this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
                     });
-                    
-                    // Also add the door to the target room
-                    if (!targetRoom.doors) targetRoom.doors = [];
-                    if (!targetRoom.doors.some(d => d.x === doorLocation.x && d.y === doorLocation.y)) {
-                        targetRoom.doors.push({
-                            x: doorLocation.x,
-                            y: doorLocation.y,
-                            isHorizontal: isHorizontal,
-                            connectsTo: room.id
-                        });
-                    }
-                    
-                    // Mark this coordinate as a door
-                    doorLocation.isDoor = true;
                 }
             });
         });
+    }
+    
+    private findPreciseDoorLocations(room1: Room, room2: Room, path: PathCoordinate[], grid: boolean[][]): PathCoordinate[] {
+        const doorLocations: PathCoordinate[] = [];
+        
+        // Check entry and exit points of the path
+        const entryPoint = this.findPathEntryPoint(room1, path);
+        const exitPoint = this.findPathEntryPoint(room2, path.slice().reverse());
+        
+        if (entryPoint) doorLocations.push(entryPoint);
+        if (exitPoint) doorLocations.push(exitPoint);
+        
+        return doorLocations;
+    }
+    
+    private findPathEntryPoint(room: Room, path: PathCoordinate[]): PathCoordinate | null {
+        for (const coord of path) {
+            if (this.isCoordinateOnRoomEdge(coord, room)) {
+                return coord;
+            }
+        }
+        return null;
+    }
+    
+    private isCoordinateOnRoomEdge(coord: PathCoordinate, room: Room): boolean {
+        return (
+            (coord.x === room.x - 1 || coord.x === room.x + room.width) &&
+            coord.y >= room.y && coord.y < room.y + room.height
+        ) || (
+            (coord.y === room.y - 1 || coord.y === room.y + room.height) &&
+            coord.x >= room.x && coord.x < room.x + room.width
+        );
+    }
+    
+    private determineDoorOrientation(doorLocation: PathCoordinate, room1: Room, room2: Room): boolean {
+        // Check if the door is on horizontal or vertical edge of rooms
+        const onHorizontalEdge = 
+            (doorLocation.y === room1.y - 1 || doorLocation.y === room1.y + room1.height) ||
+            (doorLocation.y === room2.y - 1 || doorLocation.y === room2.y + room2.height);
+        
+        return onHorizontalEdge;
+    }
+    
+    private addDoorToRoom(room: Room, doorLocation: PathCoordinate, isHorizontal: boolean, connectsTo: number): void {
+        if (!room.doors) room.doors = [];
+        
+        // Prevent duplicate doors
+        if (!room.doors.some(d => d.x === doorLocation.x && d.y === doorLocation.y)) {
+            room.doors.push({
+                x: doorLocation.x,
+                y: doorLocation.y,
+                isHorizontal: isHorizontal,
+                connectsTo: connectsTo
+            });
+        }
     }
     
     /**

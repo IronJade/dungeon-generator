@@ -989,6 +989,18 @@ var SvgGenerator = class {
           }
         }
       }
+      rooms.forEach((room) => {
+        if (room.pathsTo) {
+          room.pathsTo.forEach((pathInfo) => {
+            pathInfo.path.forEach((coord) => {
+              const key = `${coord.x},${coord.y}`;
+              if (!roomCells[key] && !doorCells[key]) {
+                corridorCells[key] = true;
+              }
+            });
+          });
+        }
+      });
     }
     svg += `<g>`;
     Object.keys(corridorCells).forEach((key) => {
@@ -1563,32 +1575,53 @@ var DungeonGenerator = class {
         const targetRoom = rooms.find((r) => r.id === pathInfo.roomId);
         if (!targetRoom)
           return;
-        const doorLocations = this.findDoorLocations(room, targetRoom, pathInfo.path, grid);
+        const doorLocations = this.findPreciseDoorLocations(room, targetRoom, pathInfo.path, grid);
         if (doorLocations.length > 0) {
-          const doorLocation = doorLocations[0];
-          const isHorizontal = this.isDoorHorizontal(doorLocation, room);
-          if (!room.doors)
-            room.doors = [];
-          room.doors.push({
-            x: doorLocation.x,
-            y: doorLocation.y,
-            isHorizontal,
-            connectsTo: targetRoom.id
+          doorLocations.forEach((doorLocation) => {
+            const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
+            this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
+            this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
           });
-          if (!targetRoom.doors)
-            targetRoom.doors = [];
-          if (!targetRoom.doors.some((d) => d.x === doorLocation.x && d.y === doorLocation.y)) {
-            targetRoom.doors.push({
-              x: doorLocation.x,
-              y: doorLocation.y,
-              isHorizontal,
-              connectsTo: room.id
-            });
-          }
-          doorLocation.isDoor = true;
         }
       });
     });
+  }
+  findPreciseDoorLocations(room1, room2, path, grid) {
+    const doorLocations = [];
+    const entryPoint = this.findPathEntryPoint(room1, path);
+    const exitPoint = this.findPathEntryPoint(room2, path.slice().reverse());
+    if (entryPoint)
+      doorLocations.push(entryPoint);
+    if (exitPoint)
+      doorLocations.push(exitPoint);
+    return doorLocations;
+  }
+  findPathEntryPoint(room, path) {
+    for (const coord of path) {
+      if (this.isCoordinateOnRoomEdge(coord, room)) {
+        return coord;
+      }
+    }
+    return null;
+  }
+  isCoordinateOnRoomEdge(coord, room) {
+    return (coord.x === room.x - 1 || coord.x === room.x + room.width) && coord.y >= room.y && coord.y < room.y + room.height || (coord.y === room.y - 1 || coord.y === room.y + room.height) && coord.x >= room.x && coord.x < room.x + room.width;
+  }
+  determineDoorOrientation(doorLocation, room1, room2) {
+    const onHorizontalEdge = doorLocation.y === room1.y - 1 || doorLocation.y === room1.y + room1.height || (doorLocation.y === room2.y - 1 || doorLocation.y === room2.y + room2.height);
+    return onHorizontalEdge;
+  }
+  addDoorToRoom(room, doorLocation, isHorizontal, connectsTo) {
+    if (!room.doors)
+      room.doors = [];
+    if (!room.doors.some((d) => d.x === doorLocation.x && d.y === doorLocation.y)) {
+      room.doors.push({
+        x: doorLocation.x,
+        y: doorLocation.y,
+        isHorizontal,
+        connectsTo
+      });
+    }
   }
   /**
    * Find valid door locations between a room and a path

@@ -62,6 +62,21 @@ export class SvgGenerator {
                     }
                 }
             }
+        
+            // Iterate through paths to rooms and draw corridors
+            rooms.forEach(room => {
+                if (room.pathsTo) {
+                    room.pathsTo.forEach(pathInfo => {
+                        // Draw the corridor path
+                        pathInfo.path.forEach(coord => {
+                            const key = `${coord.x},${coord.y}`;
+                            if (!roomCells[key] && !doorCells[key]) {
+                                corridorCells[key] = true;
+                            }
+                        });
+                    });
+                }
+            });
         }
         
         // Draw corridors with corridor color
