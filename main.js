@@ -1010,6 +1010,18 @@ var SvgGenerator = class {
                          fill="${corridorColor}" />`;
     });
     svg += `</g>`;
+    svg += `<g>`;
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        if (grid[y][x] && !roomCells[key] && !doorCells[key]) {
+          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${corridorColor}" />`;
+        }
+      }
+    }
+    svg += `</g>`;
     if (useColors) {
       svg += `<g>`;
       rooms.forEach((room) => {
@@ -1033,26 +1045,19 @@ var SvgGenerator = class {
       Object.entries(doorCells).forEach(([key, door]) => {
         const [x, y] = key.split(",").map(Number);
         if (doorStyle === "line") {
-          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                             width="${cellSize}" height="${cellSize}" 
-                             fill="${corridorColor}" />`;
           if (door.isHorizontal) {
-            const lineY = y * cellSize + cellSize / 2 + padding;
-            const lineX1 = x * cellSize + padding;
-            const lineX2 = lineX1 + cellSize;
-            svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
-                                 stroke="${wallColor}" stroke-width="2" />`;
-          } else {
-            const lineX = x * cellSize + cellSize / 2 + padding;
+            const lineX = x * cellSize + padding;
             const lineY1 = y * cellSize + padding;
             const lineY2 = lineY1 + cellSize;
             svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" 
                                  stroke="${wallColor}" stroke-width="2" />`;
+          } else {
+            const lineY = y * cellSize + padding;
+            const lineX1 = x * cellSize + padding;
+            const lineX2 = lineX1 + cellSize;
+            svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
+                                 stroke="${wallColor}" stroke-width="2" />`;
           }
-        } else if (doorStyle === "gap") {
-          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                             width="${cellSize}" height="${cellSize}" 
-                             fill="${corridorColor}" />`;
         }
       });
       svg += `</g>`;
@@ -1416,6 +1421,17 @@ var DungeonGenerator = class {
         connected.add(bestUnconnectedRoom);
         unconnected.delete(bestUnconnectedRoom);
       }
+      rooms.forEach((room) => {
+        if (room.pathsTo) {
+          room.pathsTo.forEach((pathInfo) => {
+            pathInfo.path.forEach((coord) => {
+              if (coord.x >= 0 && coord.x < gridSize && coord.y >= 0 && coord.y < gridSize) {
+                grid[coord.y][coord.x] = true;
+              }
+            });
+          });
+        }
+      });
     }
     const extraConnections = Math.floor(rooms.length * 0.2) + 1;
     for (let i = 0; i < extraConnections; i++) {

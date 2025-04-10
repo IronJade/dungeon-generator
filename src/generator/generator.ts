@@ -293,6 +293,22 @@ export class DungeonGenerator {
                 connected.add(bestUnconnectedRoom);
                 unconnected.delete(bestUnconnectedRoom);
             }
+
+            rooms.forEach(room => {
+                if (room.pathsTo) {
+                    room.pathsTo.forEach(pathInfo => {
+                        // Mark each coordinate in the path as a corridor
+                        pathInfo.path.forEach(coord => {
+                            // Ensure coordinate is within grid bounds
+                            if (coord.x >= 0 && coord.x < gridSize && 
+                                coord.y >= 0 && coord.y < gridSize) {
+                                grid[coord.y][coord.x] = true;
+                            }
+                        });
+                    });
+                }
+            });
+            
         }
         
         // Add a few extra connections for loops (about 20% more connections)

@@ -88,6 +88,21 @@ export class SvgGenerator {
                          fill="${corridorColor}" />`;
         });
         svg += `</g>`;
+
+        // Separate pass for corridor rendering to ensure clear visualization
+        svg += `<g>`;
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const key = `${x},${y}`;
+                // Explicitly check if cell is a corridor (in grid but not a room or door)
+                if (grid[y][x] && !roomCells[key] && !doorCells[key]) {
+                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${corridorColor}" />`;
+                }
+            }
+        }
+        svg += `</g>`;
         
         // Draw room floors with color coding
         if (useColors) {
@@ -118,32 +133,22 @@ export class SvgGenerator {
                 const [x, y] = key.split(',').map(Number);
                 
                 if (doorStyle === 'line') {
-                    // Draw doors as gaps in the walls
-                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                             width="${cellSize}" height="${cellSize}" 
-                             fill="${corridorColor}" />`;
-                    
-                    // Draw a door line
+                    // Determine exact door position based on orientation
                     if (door.isHorizontal) {
-                        // Horizontal door (on top/bottom of room) - draw horizontal line
-                        const lineY = y * cellSize + cellSize / 2 + padding;
-                        const lineX1 = x * cellSize + padding;
-                        const lineX2 = lineX1 + cellSize;
-                        svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
-                                 stroke="${wallColor}" stroke-width="2" />`;
-                    } else {
-                        // Vertical door (on left/right of room) - draw vertical line
-                        const lineX = x * cellSize + cellSize / 2 + padding;
+                        // Horizontal door - align on vertical grid line separating room
+                        const lineX = x * cellSize + padding;
                         const lineY1 = y * cellSize + padding;
                         const lineY2 = lineY1 + cellSize;
                         svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" 
                                  stroke="${wallColor}" stroke-width="2" />`;
+                    } else {
+                        // Vertical door - align on horizontal grid line separating room
+                        const lineY = y * cellSize + padding;
+                        const lineX1 = x * cellSize + padding;
+                        const lineX2 = lineX1 + cellSize;
+                        svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
+                                 stroke="${wallColor}" stroke-width="2" />`;
                     }
-                } else if (doorStyle === 'gap') {
-                    // For gap style, we just color the door cell like a corridor
-                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                             width="${cellSize}" height="${cellSize}" 
-                             fill="${corridorColor}" />`;
                 }
             });
             svg += `</g>`;
