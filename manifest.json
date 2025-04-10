@@ -5,6 +5,6 @@
     "minAppVersion": "0.15.0",
     "description": "Generate customizable dungeon maps for tabletop RPGs",
     "author": "IronJade",
-    "authorUrl": "gitgub.com/IronJade",
+    "authorUrl": "github.com/IronJade",
     "isDesktopOnly": false
-}
+  }
