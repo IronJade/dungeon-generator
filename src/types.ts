@@ -29,6 +29,7 @@ export interface Door {
     y: number;
     isHorizontal: boolean;
     connectsTo: number;
+    wall?: 'top' | 'bottom' | 'left' | 'right'; // Added wall property
 }
 
 // Path information between rooms

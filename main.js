@@ -963,43 +963,7 @@ var SvgGenerator = class {
     const doorStyle = ((_g = this.mapStyle) == null ? void 0 : _g.doorStyle) || "line";
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">`;
     svg += `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="#000000" />`;
-    const cellTypes = {};
-    const doorLocations = {};
-    rooms.forEach((room) => {
-      for (let y = room.y; y < room.y + room.height; y++) {
-        for (let x = room.x; x < room.x + room.width; x++) {
-          const key = `${x},${y}`;
-          cellTypes[key] = "room";
-        }
-      }
-      if (room.doors) {
-        room.doors.forEach((door) => {
-          const key = `${door.x},${door.y}`;
-          cellTypes[key] = "door";
-          doorLocations[key] = door;
-        });
-      }
-    });
-    rooms.forEach((room) => {
-      if (room.pathsTo) {
-        room.pathsTo.forEach((pathInfo) => {
-          pathInfo.path.forEach((coord) => {
-            const key = `${coord.x},${coord.y}`;
-            if (!cellTypes[key]) {
-              cellTypes[key] = "corridor";
-            }
-          });
-        });
-      }
-    });
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
-        const key = `${x},${y}`;
-        if (!cellTypes[key]) {
-          cellTypes[key] = grid[y][x] ? "wall" : "wall";
-        }
-      }
-    }
+    const cellTypes = this.createCellTypeMap(rooms, grid, gridSize);
     if (useColors) {
       svg += `<g>`;
       rooms.forEach((room) => {
@@ -1022,7 +986,7 @@ var SvgGenerator = class {
     for (let y = 0; y < gridSize; y++) {
       for (let x = 0; x < gridSize; x++) {
         const key = `${x},${y}`;
-        if (cellTypes[key] === "corridor" || cellTypes[key] === "door") {
+        if (cellTypes[key] === "corridor") {
           svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
                              width="${cellSize}" height="${cellSize}" 
                              fill="${corridorColor}" />`;
@@ -1043,20 +1007,41 @@ var SvgGenerator = class {
     }
     svg += `</g>`;
     if (doorStyle !== "none") {
-      svg += `<g stroke="${wallColor}" stroke-width="2">`;
-      Object.entries(doorLocations).forEach(([key, door]) => {
-        const [x, y] = key.split(",").map(Number);
-        if (door.isHorizontal) {
-          const lineY = y * cellSize + padding;
-          const lineX1 = x * cellSize + padding;
-          const lineX2 = lineX1 + cellSize;
-          svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" />`;
-        } else {
-          const lineX = x * cellSize + padding;
-          const lineY1 = y * cellSize + padding;
-          const lineY2 = lineY1 + cellSize;
-          svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" />`;
+      svg += `<g>`;
+      for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+          const key = `${x},${y}`;
+          if (cellTypes[key] === "door") {
+            svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                                 width="${cellSize}" height="${cellSize}" 
+                                 fill="${corridorColor}" />`;
+          }
         }
+      }
+      svg += `</g>`;
+    }
+    if (doorStyle !== "none") {
+      svg += `<g stroke="${wallColor}" stroke-width="2">`;
+      rooms.forEach((room) => {
+        if (!room.doors)
+          return;
+        room.doors.forEach((door) => {
+          if (door.isHorizontal) {
+            const x = door.x * cellSize + padding;
+            const y = door.y < room.y ? room.y * cellSize + padding : (room.y + room.height) * cellSize + padding;
+            if (doorStyle === "line") {
+              svg += `<line x1="${x}" y1="${y}" x2="${x + cellSize}" y2="${y}" stroke-width="3" />`;
+            } else if (doorStyle === "gap") {
+            }
+          } else {
+            const y = door.y * cellSize + padding;
+            const x = door.x < room.x ? room.x * cellSize + padding : (room.x + room.width) * cellSize + padding;
+            if (doorStyle === "line") {
+              svg += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + cellSize}" stroke-width="3" />`;
+            } else if (doorStyle === "gap") {
+            }
+          }
+        });
       });
       svg += `</g>`;
     }
@@ -1078,10 +1063,48 @@ var SvgGenerator = class {
     svg += `</svg>`;
     return svg;
   }
+  /**
+   * Create a map of cell types for the entire grid
+   * This helps determine what to draw at each position
+   */
+  createCellTypeMap(rooms, grid, gridSize) {
+    const cellTypes = {};
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        cellTypes[key] = "wall";
+      }
+    }
+    rooms.forEach((room) => {
+      for (let y = room.y; y < room.y + room.height; y++) {
+        for (let x = room.x; x < room.x + room.width; x++) {
+          const key = `${x},${y}`;
+          cellTypes[key] = "room";
+        }
+      }
+    });
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        if (cellTypes[key] !== "room" && grid[y][x]) {
+          cellTypes[key] = "corridor";
+        }
+      }
+    }
+    rooms.forEach((room) => {
+      if (!room.doors)
+        return;
+      room.doors.forEach((door) => {
+        const key = `${door.x},${door.y}`;
+        cellTypes[key] = "door";
+      });
+    });
+    return cellTypes;
+  }
   getRoomContentColor(contentType) {
     switch (contentType) {
       case "Empty":
-        return "#aaaaaa";
+        return "#ffffff";
       case "Trap":
         return "#ff9999";
       case "Minor Hazard":
@@ -1099,7 +1122,7 @@ var SvgGenerator = class {
       case "Boss Monster":
         return "#ff6666";
       default:
-        return "#aaaaaa";
+        return "#ffffff";
     }
   }
 };
@@ -1243,7 +1266,8 @@ var DungeonGenerator = class {
     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false));
     this.generateVariableSizedRooms(rooms, grid, gridSize, numRooms, dungeonType, options.size);
     this.connectRoomsWithHallways(rooms, grid, gridSize);
-    this.placeDoors(rooms, grid);
+    this.placeDoors(rooms, grid, gridSize);
+    this.enforceCorridorSize(grid, rooms, gridSize);
     this.cleanupGrid(grid, rooms, gridSize);
     const svg = this.svgGenerator.generateSVG(rooms, grid, gridSize, sizeConfig.cellSize);
     const guide = this.guideGenerator.generateGuide(rooms, dungeonType.name);
@@ -1256,13 +1280,33 @@ var DungeonGenerator = class {
   getSizeConfig(size) {
     switch (size) {
       case "Small":
-        return { minRooms: 5, maxRooms: 8, gridSize: 24, cellSize: 20 };
+        return {
+          minRooms: 5,
+          maxRooms: 8,
+          gridSize: 24,
+          cellSize: 20
+        };
       case "Medium":
-        return { minRooms: 8, maxRooms: 12, gridSize: 32, cellSize: 16 };
+        return {
+          minRooms: 8,
+          maxRooms: 12,
+          gridSize: 32,
+          cellSize: 16
+        };
       case "Large":
-        return { minRooms: 12, maxRooms: 20, gridSize: 48, cellSize: 12 };
+        return {
+          minRooms: 12,
+          maxRooms: 20,
+          gridSize: 48,
+          cellSize: 12
+        };
       default:
-        return { minRooms: 8, maxRooms: 12, gridSize: 32, cellSize: 16 };
+        return {
+          minRooms: 8,
+          maxRooms: 12,
+          gridSize: 32,
+          cellSize: 16
+        };
     }
   }
   /**
@@ -1270,13 +1314,48 @@ var DungeonGenerator = class {
    */
   generateVariableSizedRooms(rooms, grid, gridSize, numRooms, dungeonType, size) {
     const roomShapes = [
-      { name: "small-square", width: 2, height: 2, probability: 0.25 },
-      { name: "medium-square", width: 3, height: 3, probability: 0.2 },
-      { name: "large-square", width: 4, height: 4, probability: 0.1 },
-      { name: "small-rectangle-h", width: 3, height: 2, probability: 0.15 },
-      { name: "medium-rectangle-h", width: 4, height: 3, probability: 0.1 },
-      { name: "small-rectangle-v", width: 2, height: 3, probability: 0.15 },
-      { name: "medium-rectangle-v", width: 3, height: 4, probability: 0.05 }
+      {
+        name: "small-square",
+        width: 2,
+        height: 2,
+        probability: 0.25
+      },
+      {
+        name: "medium-square",
+        width: 3,
+        height: 3,
+        probability: 0.2
+      },
+      {
+        name: "large-square",
+        width: 4,
+        height: 4,
+        probability: 0.1
+      },
+      {
+        name: "small-rectangle-h",
+        width: 3,
+        height: 2,
+        probability: 0.15
+      },
+      {
+        name: "medium-rectangle-h",
+        width: 4,
+        height: 3,
+        probability: 0.1
+      },
+      {
+        name: "small-rectangle-v",
+        width: 2,
+        height: 3,
+        probability: 0.15
+      },
+      {
+        name: "medium-rectangle-v",
+        width: 3,
+        height: 4,
+        probability: 0.05
+      }
     ];
     for (let i = 0; i < numRooms; i++) {
       let attempts = 0;
@@ -1404,7 +1483,8 @@ var DungeonGenerator = class {
         });
         room2.pathsTo.push({
           roomId: room1.id,
-          path: bestPath
+          path: [...bestPath].reverse()
+          // Reverse for the other direction
         });
         connected.add(bestUnconnectedRoom);
         unconnected.delete(bestUnconnectedRoom);
@@ -1458,7 +1538,8 @@ var DungeonGenerator = class {
         });
         room2.pathsTo.push({
           roomId: room1.id,
-          path: bestPath
+          path: [...bestPath].reverse()
+          // Reverse for the other direction
         });
       }
     }
@@ -1490,71 +1571,142 @@ var DungeonGenerator = class {
     for (let x = room.x; x < room.x + room.width; x++) {
       const y = room.y - 1;
       if (y >= 0 && !grid[y][x]) {
-        exits.push({ x, y, isDoor: false });
+        exits.push({
+          x,
+          y,
+          isDoor: false
+        });
       }
     }
     for (let x = room.x; x < room.x + room.width; x++) {
       const y = room.y + room.height;
       if (y < gridSize && !grid[y][x]) {
-        exits.push({ x, y, isDoor: false });
+        exits.push({
+          x,
+          y,
+          isDoor: false
+        });
       }
     }
     for (let y = room.y; y < room.y + room.height; y++) {
       const x = room.x - 1;
       if (x >= 0 && !grid[y][x]) {
-        exits.push({ x, y, isDoor: false });
+        exits.push({
+          x,
+          y,
+          isDoor: false
+        });
       }
     }
     for (let y = room.y; y < room.y + room.height; y++) {
       const x = room.x + room.width;
       if (x < gridSize && !grid[y][x]) {
-        exits.push({ x, y, isDoor: false });
+        exits.push({
+          x,
+          y,
+          isDoor: false
+        });
       }
     }
     if (exits.length === 0) {
       if (room.x > 0 && room.y > 0 && !grid[room.y - 1][room.x - 1]) {
-        exits.push({ x: room.x - 1, y: room.y - 1, isDoor: false });
+        exits.push({
+          x: room.x - 1,
+          y: room.y - 1,
+          isDoor: false
+        });
       }
       if (room.x + room.width < gridSize && room.y > 0 && !grid[room.y - 1][room.x + room.width]) {
-        exits.push({ x: room.x + room.width, y: room.y - 1, isDoor: false });
+        exits.push({
+          x: room.x + room.width,
+          y: room.y - 1,
+          isDoor: false
+        });
       }
       if (room.x > 0 && room.y + room.height < gridSize && !grid[room.y + room.height][room.x - 1]) {
-        exits.push({ x: room.x - 1, y: room.y + room.height, isDoor: false });
+        exits.push({
+          x: room.x - 1,
+          y: room.y + room.height,
+          isDoor: false
+        });
       }
       if (room.x + room.width < gridSize && room.y + room.height < gridSize && !grid[room.y + room.height][room.x + room.width]) {
-        exits.push({ x: room.x + room.width, y: room.y + room.height, isDoor: false });
+        exits.push({
+          x: room.x + room.width,
+          y: room.y + room.height,
+          isDoor: false
+        });
       }
     }
     return exits;
   }
   /**
-   * Generate a path between two points using A* pathfinding algorithm
+   * Generate a path between two points
+   * Improved to ensure continuous corridors
    */
   generatePathBetweenPoints(start, end, grid, gridSize) {
     const path = [];
+    path.push({
+      ...start,
+      isDoor: false
+    });
     const goHorizontalFirst = Math.random() > 0.5;
     if (goHorizontalFirst) {
       let x = start.x;
+      const stepX = x < end.x ? 1 : -1;
       while (x !== end.x) {
-        x += x < end.x ? 1 : -1;
-        path.push({ x, y: start.y, isDoor: false });
+        x += stepX;
+        if (x >= 0 && x < gridSize) {
+          path.push({
+            x,
+            y: start.y,
+            isDoor: false
+          });
+        }
       }
       let y = start.y;
+      const stepY = y < end.y ? 1 : -1;
       while (y !== end.y) {
-        y += y < end.y ? 1 : -1;
-        path.push({ x: end.x, y, isDoor: false });
+        y += stepY;
+        if (y >= 0 && y < gridSize) {
+          path.push({
+            x: end.x,
+            y,
+            isDoor: false
+          });
+        }
       }
     } else {
       let y = start.y;
+      const stepY = y < end.y ? 1 : -1;
       while (y !== end.y) {
-        y += y < end.y ? 1 : -1;
-        path.push({ x: start.x, y, isDoor: false });
+        y += stepY;
+        if (y >= 0 && y < gridSize) {
+          path.push({
+            x: start.x,
+            y,
+            isDoor: false
+          });
+        }
       }
       let x = start.x;
+      const stepX = x < end.x ? 1 : -1;
       while (x !== end.x) {
-        x += x < end.x ? 1 : -1;
-        path.push({ x, y: end.y, isDoor: false });
+        x += stepX;
+        if (x >= 0 && x < gridSize) {
+          path.push({
+            x,
+            y: end.y,
+            isDoor: false
+          });
+        }
       }
+    }
+    if (path.length === 0 || path[path.length - 1].x !== end.x || path[path.length - 1].y !== end.y) {
+      path.push({
+        ...end,
+        isDoor: false
+      });
     }
     return path;
   }
@@ -1569,110 +1721,264 @@ var DungeonGenerator = class {
     });
   }
   /**
-   * Place doors at appropriate hallway-room junctions
+   * Place doors at appropriate hallway-room junctions, ensuring only one door per wall
    */
-  placeDoors(rooms, grid) {
+  placeDoors(rooms, grid, gridSize) {
     rooms.forEach((room) => {
-      if (!room.pathsTo)
-        return;
-      room.pathsTo.forEach((pathInfo) => {
-        const targetRoom = rooms.find((r) => r.id === pathInfo.roomId);
-        if (!targetRoom)
-          return;
-        const doorLocation = this.findDoorLocation(room, targetRoom, pathInfo.path);
-        if (doorLocation) {
-          const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
-          this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
-          this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
+      room.doors = [];
+    });
+    rooms.forEach((room) => {
+      var _a, _b;
+      if (!room.doors) {
+        room.doors = [];
+      }
+      const hasTopDoor = false;
+      const hasBottomDoor = false;
+      const hasLeftDoor = false;
+      const hasRightDoor = false;
+      const wallDoors = {
+        top: false,
+        bottom: false,
+        left: false,
+        right: false
+      };
+      const possibleDoors = [];
+      for (let x = room.x; x < room.x + room.width; x++) {
+        const y = room.y - 1;
+        if (this.isValidDoorLocation(x, y, grid, gridSize)) {
+          possibleDoors.push({
+            x,
+            y,
+            isHorizontal: true,
+            connectsTo: this.findConnectedRoomId(x, y, room.id, rooms),
+            wall: "top"
+          });
+        }
+      }
+      for (let x = room.x; x < room.x + room.width; x++) {
+        const y = room.y + room.height;
+        if (this.isValidDoorLocation(x, y, grid, gridSize)) {
+          possibleDoors.push({
+            x,
+            y,
+            isHorizontal: true,
+            connectsTo: this.findConnectedRoomId(x, y, room.id, rooms),
+            wall: "bottom"
+          });
+        }
+      }
+      for (let y = room.y; y < room.y + room.height; y++) {
+        const x = room.x - 1;
+        if (this.isValidDoorLocation(x, y, grid, gridSize)) {
+          possibleDoors.push({
+            x,
+            y,
+            isHorizontal: false,
+            connectsTo: this.findConnectedRoomId(x, y, room.id, rooms),
+            wall: "left"
+          });
+        }
+      }
+      for (let y = room.y; y < room.y + room.height; y++) {
+        const x = room.x + room.width;
+        if (this.isValidDoorLocation(x, y, grid, gridSize)) {
+          possibleDoors.push({
+            x,
+            y,
+            isHorizontal: false,
+            connectsTo: this.findConnectedRoomId(x, y, room.id, rooms),
+            wall: "right"
+          });
+        }
+      }
+      const connectedRoomIds = new Set(room.connections);
+      const doorsByWall = {
+        top: [],
+        bottom: [],
+        left: [],
+        right: []
+      };
+      possibleDoors.forEach((door) => {
+        if (door.wall) {
+          doorsByWall[door.wall].push(door);
         }
       });
+      Object.keys(doorsByWall).forEach((wall) => {
+        const wallDoorOptions = doorsByWall[wall];
+        if (wallDoorOptions.length > 0) {
+          const connectingDoors = wallDoorOptions.filter((d) => connectedRoomIds.has(d.connectsTo));
+          if (connectingDoors.length > 0) {
+            const selectedDoor = this.getRandomElement(connectingDoors);
+            if (room.doors) {
+              room.doors.push(selectedDoor);
+            }
+            connectedRoomIds.delete(selectedDoor.connectsTo);
+          } else {
+            const selectedDoor = this.getRandomElement(wallDoorOptions);
+            if (room.doors) {
+              room.doors.push(selectedDoor);
+            }
+          }
+        }
+      });
+      if (connectedRoomIds.size > 0 && possibleDoors.length > (((_a = room.doors) == null ? void 0 : _a.length) || 0)) {
+        const usedWalls = new Set(((_b = room.doors) == null ? void 0 : _b.map((d) => d.wall)) || []);
+        for (const door of possibleDoors) {
+          if (connectedRoomIds.has(door.connectsTo) && door.wall && !usedWalls.has(door.wall)) {
+            if (room.doors) {
+              room.doors.push(door);
+            }
+            usedWalls.add(door.wall);
+            connectedRoomIds.delete(door.connectsTo);
+          }
+        }
+      }
     });
   }
-  findDoorLocation(room1, room2, path) {
-    for (const coord of path) {
-      if (this.isCoordinateOnRoomEdge(coord, room1)) {
-        return coord;
+  /**
+   * Check if a location is valid for a door (corridor cell adjacent to a room)
+   */
+  isValidDoorLocation(x, y, grid, gridSize) {
+    if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) {
+      return false;
+    }
+    return grid[y][x];
+  }
+  /**
+   * Find the ID of a room connected to a door location
+   */
+  findConnectedRoomId(doorX, doorY, currentRoomId, rooms) {
+    let closestRoom = null;
+    let minDistance = Infinity;
+    for (const room of rooms) {
+      if (room.id === currentRoomId)
+        continue;
+      const onPerimeter = this.isOnRoomPerimeter(doorX, doorY, room);
+      if (onPerimeter) {
+        return room.id;
+      }
+      const centerX = room.x + room.width / 2;
+      const centerY = room.y + room.height / 2;
+      const distance = Math.sqrt(Math.pow(doorX - centerX, 2) + Math.pow(doorY - centerY, 2));
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestRoom = room;
       }
     }
-    return null;
+    return closestRoom ? closestRoom.id : 0;
   }
-  isCoordinateOnRoomEdge(coord, room) {
-    if (coord.y === room.y - 1 && coord.x >= room.x && coord.x < room.x + room.width) {
+  /**
+   * Check if a coordinate is on a room's perimeter
+   */
+  isOnRoomPerimeter(x, y, room) {
+    if (y === room.y - 1 && x >= room.x && x < room.x + room.width) {
       return true;
     }
-    if (coord.y === room.y + room.height && coord.x >= room.x && coord.x < room.x + room.width) {
+    if (y === room.y + room.height && x >= room.x && x < room.x + room.width) {
       return true;
     }
-    if (coord.x === room.x - 1 && coord.y >= room.y && coord.y < room.y + room.height) {
+    if (x === room.x - 1 && y >= room.y && y < room.y + room.height) {
       return true;
     }
-    if (coord.x === room.x + room.width && coord.y >= room.y && coord.y < room.y + room.height) {
+    if (x === room.x + room.width && y >= room.y && y < room.y + room.height) {
       return true;
     }
     return false;
   }
-  determineDoorOrientation(doorLocation, room1, room2) {
-    const onHorizontalEdge = doorLocation.y === room1.y - 1 || doorLocation.y === room1.y + room1.height || (doorLocation.y === room2.y - 1 || doorLocation.y === room2.y + room2.height);
-    return onHorizontalEdge;
-  }
-  addDoorToRoom(room, doorLocation, isHorizontal, connectsTo) {
-    if (!room.doors)
-      room.doors = [];
-    if (!room.doors.some((d) => d.x === doorLocation.x && d.y === doorLocation.y)) {
-      room.doors.push({
-        x: doorLocation.x,
-        y: doorLocation.y,
-        isHorizontal,
-        connectsTo
+  /**
+   * Ensure corridors are 1x1 tiles by adding walls where needed
+   */
+  enforceCorridorSize(grid, rooms, gridSize) {
+    const roomCells = /* @__PURE__ */ new Set();
+    rooms.forEach((room) => {
+      for (let y = room.y; y < room.y + room.height; y++) {
+        for (let x = room.x; x < room.x + room.width; x++) {
+          roomCells.add(`${x},${y}`);
+        }
+      }
+    });
+    const doorCells = /* @__PURE__ */ new Set();
+    rooms.forEach((room) => {
+      if (!room.doors)
+        return;
+      room.doors.forEach((door) => {
+        doorCells.add(`${door.x},${door.y}`);
       });
-    }
-  }
-  /**
-   * Find valid door locations between a room and a path
-   */
-  findDoorLocations(room1, room2, path, grid) {
-    const doorLocations = [];
-    for (const coord of path) {
-      if (this.isAdjacentToRoom(coord, room1)) {
-        doorLocations.push(coord);
-        break;
+    });
+    const isRoom = (x, y) => {
+      return roomCells.has(`${x},${y}`);
+    };
+    const isDoor = (x, y) => {
+      return doorCells.has(`${x},${y}`);
+    };
+    const isCorridor = (x, y) => {
+      if (x < 0 || y < 0 || x >= gridSize || y >= gridSize)
+        return false;
+      return grid[y][x] && !isRoom(x, y);
+    };
+    for (let y = 0; y < gridSize; y++) {
+      let startX = -1;
+      let corridorWidth = 0;
+      for (let x = 0; x < gridSize; x++) {
+        if (isCorridor(x, y)) {
+          if (startX === -1)
+            startX = x;
+          corridorWidth++;
+        } else {
+          if (corridorWidth > 1) {
+            const middleX = startX + Math.floor(corridorWidth / 2);
+            for (let i = startX; i < startX + corridorWidth; i++) {
+              if (i !== middleX && !isDoor(i, y)) {
+                grid[y][i] = false;
+              }
+            }
+          }
+          startX = -1;
+          corridorWidth = 0;
+        }
+      }
+      if (corridorWidth > 1) {
+        const middleX = startX + Math.floor(corridorWidth / 2);
+        for (let i = startX; i < startX + corridorWidth; i++) {
+          if (i !== middleX && !isDoor(i, y)) {
+            grid[y][i] = false;
+          }
+        }
       }
     }
-    for (let i = path.length - 1; i >= 0; i--) {
-      const coord = path[i];
-      if (this.isAdjacentToRoom(coord, room2)) {
-        doorLocations.push(coord);
-        break;
+    for (let x = 0; x < gridSize; x++) {
+      let startY = -1;
+      let corridorHeight = 0;
+      for (let y = 0; y < gridSize; y++) {
+        if (isCorridor(x, y)) {
+          if (startY === -1)
+            startY = y;
+          corridorHeight++;
+        } else {
+          if (corridorHeight > 1) {
+            const middleY = startY + Math.floor(corridorHeight / 2);
+            for (let i = startY; i < startY + corridorHeight; i++) {
+              if (i !== middleY && !isDoor(x, i)) {
+                grid[i][x] = false;
+              }
+            }
+          }
+          startY = -1;
+          corridorHeight = 0;
+        }
+      }
+      if (corridorHeight > 1) {
+        const middleY = startY + Math.floor(corridorHeight / 2);
+        for (let i = startY; i < startY + corridorHeight; i++) {
+          if (i !== middleY && !isDoor(x, i)) {
+            grid[i][x] = false;
+          }
+        }
       }
     }
-    return doorLocations;
   }
   /**
-   * Check if a coordinate is adjacent to a room
-   */
-  isAdjacentToRoom(coord, room) {
-    if (coord.y === room.y - 1 && coord.x >= room.x && coord.x < room.x + room.width) {
-      return true;
-    }
-    if (coord.y === room.y + room.height && coord.x >= room.x && coord.x < room.x + room.width) {
-      return true;
-    }
-    if (coord.x === room.x - 1 && coord.y >= room.y && coord.y < room.y + room.height) {
-      return true;
-    }
-    if (coord.x === room.x + room.width && coord.y >= room.y && coord.y < room.y + room.height) {
-      return true;
-    }
-    return false;
-  }
-  /**
-   * Determine if a door is horizontal (on top/bottom edge) or vertical (on left/right edge)
-   */
-  isDoorHorizontal(doorLocation, room) {
-    return doorLocation.y === room.y - 1 || doorLocation.y === room.y + room.height;
-  }
-  /**
-   * Clean up the grid to eliminate dead-end corridors and fix intersections
+   * Clean up the grid to ensure hallways connect properly and remove dead ends
    */
   cleanupGrid(grid, rooms, gridSize) {
     const occupiedCells = /* @__PURE__ */ new Set();
@@ -1694,7 +2000,9 @@ var DungeonGenerator = class {
       }
     });
     rooms.forEach((room) => {
-      if (room.doors) {
+      if (!room.doors) {
+        room.doors = [];
+      } else {
         room.doors.forEach((door) => {
           const key = `${door.x},${door.y}`;
           occupiedCells.add(key);
@@ -1707,7 +2015,34 @@ var DungeonGenerator = class {
         grid[y][x] = occupiedCells.has(key);
       }
     }
+    this.validateDoorConnections(rooms);
   }
+  /**
+   * Validate that doors have correct connection information
+   */
+  validateDoorConnections(rooms) {
+    const roomMap = /* @__PURE__ */ new Map();
+    rooms.forEach((room) => roomMap.set(room.id, room));
+    rooms.forEach((room) => {
+      if (!room.doors) {
+        room.doors = [];
+        return;
+      }
+      room.doors.forEach((door) => {
+        if (!roomMap.has(door.connectsTo) || door.connectsTo === room.id) {
+          for (const otherRoom of rooms) {
+            if (otherRoom.id !== room.id) {
+              door.connectsTo = otherRoom.id;
+              break;
+            }
+          }
+        }
+      });
+    });
+  }
+  /**
+   * Get the room content type based on probabilities
+   */
   determineRoomContent(size) {
     const probabilityTable = {
       "Empty": 15,
@@ -1733,6 +2068,9 @@ var DungeonGenerator = class {
     }
     return "Empty";
   }
+  /**
+   * Get content description based on content type
+   */
   getRoomContentByType(contentType, dungeonType) {
     switch (contentType) {
       case "Trap":
@@ -1755,6 +2093,9 @@ var DungeonGenerator = class {
         return "Empty room";
     }
   }
+  /**
+   * Get a random element from an array
+   */
   getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
   }

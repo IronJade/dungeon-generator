@@ -29,52 +29,7 @@ export class SvgGenerator {
         svg += `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="#000000" />`;
         
         // Create cell mappings for easier cell-type identification
-        const cellTypes: Record<string, 'room' | 'door' | 'corridor' | 'wall'> = {};
-        const doorLocations: Record<string, Door> = {};
-        
-        // Map room cells
-        rooms.forEach(room => {
-            for (let y = room.y; y < room.y + room.height; y++) {
-                for (let x = room.x; x < room.x + room.width; x++) {
-                    const key = `${x},${y}`;
-                    cellTypes[key] = 'room';
-                }
-            }
-            
-            // Map door cells
-            if (room.doors) {
-                room.doors.forEach(door => {
-                    const key = `${door.x},${door.y}`;
-                    cellTypes[key] = 'door';
-                    doorLocations[key] = door;
-                });
-            }
-        });
-        
-        // Map corridor and path cells
-        rooms.forEach(room => {
-            if (room.pathsTo) {
-                room.pathsTo.forEach(pathInfo => {
-                    pathInfo.path.forEach(coord => {
-                        const key = `${coord.x},${coord.y}`;
-                        // Only mark as corridor if not already a room or door
-                        if (!cellTypes[key]) {
-                            cellTypes[key] = 'corridor';
-                        }
-                    });
-                });
-            }
-        });
-        
-        // Mark remaining grid cells as walls
-        for (let y = 0; y < gridSize; y++) {
-            for (let x = 0; x < gridSize; x++) {
-                const key = `${x},${y}`;
-                if (!cellTypes[key]) {
-                    cellTypes[key] = grid[y][x] ? 'wall' : 'wall';
-                }
-            }
-        }
+        const cellTypes = this.createCellTypeMap(rooms, grid, gridSize);
         
         // Draw room floors with color coding
         if (useColors) {
@@ -98,12 +53,12 @@ export class SvgGenerator {
             svg += `</g>`;
         }
         
-        // Draw corridors and doors
+        // Draw corridors
         svg += `<g>`;
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 const key = `${x},${y}`;
-                if (cellTypes[key] === 'corridor' || cellTypes[key] === 'door') {
+                if (cellTypes[key] === 'corridor') {
                     svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
                              width="${cellSize}" height="${cellSize}" 
                              fill="${corridorColor}" />`;
@@ -126,26 +81,61 @@ export class SvgGenerator {
         }
         svg += `</g>`;
         
-        // Draw doors as lines
+        // Overlay doors
+        // Draw door cells on top to ensure visibility
+        if (doorStyle !== 'none') {
+            svg += `<g>`;
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    const key = `${x},${y}`;
+                    if (cellTypes[key] === 'door') {
+                        svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                                 width="${cellSize}" height="${cellSize}" 
+                                 fill="${corridorColor}" />`;
+                    }
+                }
+            }
+            svg += `</g>`;
+        }
+        
+        // Draw door markers
         if (doorStyle !== 'none') {
             svg += `<g stroke="${wallColor}" stroke-width="2">`;
-            Object.entries(doorLocations).forEach(([key, door]) => {
-                const [x, y] = key.split(',').map(Number);
+            rooms.forEach(room => {
+                if (!room.doors) return;
                 
-                // Draw a line on the grid line separating the door cell
-                if (door.isHorizontal) {
-                    // Horizontal door (on top/bottom of room)
-                    const lineY = y * cellSize + padding;
-                    const lineX1 = x * cellSize + padding;
-                    const lineX2 = lineX1 + cellSize;
-                    svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" />`;
-                } else {
-                    // Vertical door (on left/right of room)
-                    const lineX = x * cellSize + padding;
-                    const lineY1 = y * cellSize + padding;
-                    const lineY2 = lineY1 + cellSize;
-                    svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" />`;
-                }
+                room.doors.forEach(door => {
+                    // Draw door markers based on orientation
+                    if (door.isHorizontal) {
+                        // Horizontal door (on top/bottom of room)
+                        const x = door.x * cellSize + padding;
+                        // Place the line exactly at the boundary
+                        const y = door.y < room.y ? 
+                                 room.y * cellSize + padding :
+                                 (room.y + room.height) * cellSize + padding;
+                        
+                        if (doorStyle === 'line') {
+                            // Draw a line along the room edge
+                            svg += `<line x1="${x}" y1="${y}" x2="${x + cellSize}" y2="${y}" stroke-width="3" />`;
+                        } else if (doorStyle === 'gap') {
+                            // Draw a gap (no visible marker, handled by the floorplan)
+                        }
+                    } else {
+                        // Vertical door (on left/right of room)
+                        const y = door.y * cellSize + padding;
+                        // Place the line exactly at the boundary
+                        const x = door.x < room.x ? 
+                                 room.x * cellSize + padding :
+                                 (room.x + room.width) * cellSize + padding;
+                        
+                        if (doorStyle === 'line') {
+                            // Draw a line along the room edge
+                            svg += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + cellSize}" stroke-width="3" />`;
+                        } else if (doorStyle === 'gap') {
+                            // Draw a gap (no visible marker, handled by the floorplan)
+                        }
+                    }
+                });
             });
             svg += `</g>`;
         }
@@ -178,10 +168,59 @@ export class SvgGenerator {
         return svg;
     }
 
+    /**
+     * Create a map of cell types for the entire grid
+     * This helps determine what to draw at each position
+     */
+    private createCellTypeMap(rooms: Room[], grid: boolean[][], gridSize: number): Record<string, string> {
+        const cellTypes: Record<string, 'room' | 'door' | 'corridor' | 'wall'> = {};
+        
+        // First mark all cells as walls initially
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const key = `${x},${y}`;
+                cellTypes[key] = 'wall';
+            }
+        }
+        
+        // Mark room cells
+        rooms.forEach(room => {
+            for (let y = room.y; y < room.y + room.height; y++) {
+                for (let x = room.x; x < room.x + room.width; x++) {
+                    const key = `${x},${y}`;
+                    cellTypes[key] = 'room';
+                }
+            }
+        });
+        
+        // Mark corridor cells
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const key = `${x},${y}`;
+                // If it's not a room but is marked as true in the grid, it's a corridor
+                if (cellTypes[key] !== 'room' && grid[y][x]) {
+                    cellTypes[key] = 'corridor';
+                }
+            }
+        }
+        
+        // Mark door cells
+        rooms.forEach(room => {
+            if (!room.doors) return;
+            
+            room.doors.forEach(door => {
+                const key = `${door.x},${door.y}`;
+                cellTypes[key] = 'door';
+            });
+        });
+        
+        return cellTypes;
+    }
+
     private getRoomContentColor(contentType: DungeonContentType): string {
         // Return color based on content type for room highlighting
         switch (contentType) {
-            case 'Empty': return '#aaaaaa'; // Light gray
+            case 'Empty': return '#ffffff'; // White
             case 'Trap': return '#ff9999';  // Light red
             case 'Minor Hazard': return '#ffcc99'; // Light orange
             case 'Solo Monster': return '#ffff99'; // Light yellow
@@ -190,7 +229,7 @@ export class SvgGenerator {
             case 'Major Hazard': return '#ff99ff'; // Light purple
             case 'Treasure': return '#ffcc00'; // Gold
             case 'Boss Monster': return '#ff6666'; // Red
-            default: return '#aaaaaa'; // Light gray
+            default: return '#ffffff'; // White
         }
     }
 }
