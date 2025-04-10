@@ -13,6 +13,14 @@ export interface Room {
     contentType: DungeonContentType;
     doors?: Door[];
     pathsTo?: PathInfo[];
+    shape?: string; // Stores the shape type (e.g., 'small-square', 'medium-rectangle-h')
+}
+
+export interface RoomShape {
+    name: string;
+    width: number;
+    height: number;
+    probability: number;
 }
 
 // Door between rooms

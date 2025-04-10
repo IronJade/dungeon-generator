@@ -55,6 +55,7 @@ export const DEFAULT_SETTINGS: DungeonGeneratorSettings = {
     mapStyle: {
         wallColor: '#4a9ebd',       // Blue wall color
         floorColor: '#ffffff',      // White floor color
+        corridorColor: '#cccccc',   // Light gray for corridors
         gridColor: '#cccccc',       // Light gray grid lines
         textColor: '#000000',       // Black text for room numbers
         useColors: true,            // Whether to use color-coding for room content

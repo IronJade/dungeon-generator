@@ -37,20 +37,24 @@ export interface DungeonTypeConfig {
 export interface MapStyle {
     wallColor: string;
     floorColor: string;
+    corridorColor: string;
     gridColor: string;
     textColor: string;
     useColors: boolean;
     doorStyle: DoorStyle;
+    showGrid?: boolean; // Optional flag to show/hide grid lines
 }
 
 // Create a default MapStyle configuration
 export const DEFAULT_MAP_STYLE: MapStyle = {
     wallColor: '#4a9ebd',
     floorColor: '#ffffff',
+    corridorColor: '#cccccc',
     gridColor: '#cccccc',
     textColor: '#000000',
     useColors: true,
-    doorStyle: 'line'
+    doorStyle: 'line',
+    showGrid: true
 };
 
 // Plugin settings

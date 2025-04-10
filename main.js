@@ -7,6 +7,9 @@ var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -21,6 +24,86 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
+// src/settings/defaults.ts
+var defaults_exports = {};
+__export(defaults_exports, {
+  DEFAULT_SETTINGS: () => DEFAULT_SETTINGS
+});
+var DEFAULT_SETTINGS;
+var init_defaults = __esm({
+  "src/settings/defaults.ts"() {
+    DEFAULT_SETTINGS = {
+      dungeonTypes: {
+        "Cave": {
+          name: "Cave",
+          possibleRooms: ["Cavern", "Grotto", "Tunnel", "Chamber", "Pool", "Crevasse", "Stalagmite Forest"],
+          possibleTraps: ["Pit Trap", "Rock Fall", "Poison Gas", "Slippery Slope"],
+          possibleMinorHazards: ["Slippery Ground", "Low Ceiling", "Unstable Floor"],
+          possibleSoloMonsters: ["Cave Bear", "Giant Bat", "Slime", "Troll"],
+          possibleNPCs: ["Lost Miner", "Hermit", "Cultist", "Refugee"],
+          possibleMonsterMobs: ["Goblins", "Kobolds", "Giant Spiders", "Bats"],
+          possibleMajorHazards: ["Underground River", "Lava Flow", "Collapsing Ceiling"],
+          possibleTreasures: ["Gem Vein", "Ancient Cache", "Forgotten Equipment", "Crystal Formation"],
+          possibleBossMonsters: ["Dragon", "Giant", "Chimera", "Elder Slime"]
+        },
+        "Tomb": {
+          name: "Tomb",
+          possibleRooms: ["Crypt", "Burial Chamber", "Sarcophagus Room", "Ceremonial Hall", "Treasure Vault"],
+          possibleTraps: ["Poison Dart", "Swinging Blade", "Collapsing Floor", "Curse Tablet"],
+          possibleMinorHazards: ["Cobwebs", "Crumbling Stairs", "Faded Inscriptions"],
+          possibleSoloMonsters: ["Mummy", "Skeleton Warrior", "Cursed Statue", "Ghost"],
+          possibleNPCs: ["Archaeologist", "Tomb Robber", "Cursed Noble", "Death Priest"],
+          possibleMonsterMobs: ["Skeletons", "Zombies", "Scarabs", "Animated Objects"],
+          possibleMajorHazards: ["Soul-draining Mist", "Time Loop", "Magical Ward"],
+          possibleTreasures: ["Royal Jewelry", "Ancient Artifacts", "Ceremonial Weapons", "Burial Masks"],
+          possibleBossMonsters: ["Lich", "Mummy Lord", "Death Knight", "Ancient Guardian"]
+        },
+        "Deep Tunnels": {
+          name: "Deep Tunnels",
+          possibleRooms: ["Mine Shaft", "Excavated Chamber", "Natural Cavity", "Crossroads", "Storage Room"],
+          possibleTraps: ["Mining Explosives", "Elevator Malfunction", "Flood Trap", "Cave-in"],
+          possibleMinorHazards: ["Poor Air Quality", "Rickety Supports", "Narrow Passage"],
+          possibleSoloMonsters: ["Giant Worm", "Rock Elemental", "Deep One", "Cave Fisher"],
+          possibleNPCs: ["Lost Explorer", "Mad Miner", "Deep Cult Priest", "Escaped Slave"],
+          possibleMonsterMobs: ["Duergar", "Troglodytes", "Hook Horrors", "Myconids"],
+          possibleMajorHazards: ["Bottomless Chasm", "Toxic Spore Cloud", "Underground Lake"],
+          possibleTreasures: ["Rare Minerals", "Dwarven Artifact", "Forgotten Cache", "Ancient Technology"],
+          possibleBossMonsters: ["Purple Worm", "Stone Titan", "Mind Flayer", "Beholder"]
+        },
+        "Ruins": {
+          name: "Ruins",
+          possibleRooms: ["Collapsed Hall", "Overgrown Chamber", "Broken Tower", "Former Library", "Throne Room"],
+          possibleTraps: ["Collapsing Wall", "Hidden Pitfall", "Ancient Magic Rune", "Animated Statue"],
+          possibleMinorHazards: ["Crumbling Floor", "Overgrown Vegetation", "Unstable Archway"],
+          possibleSoloMonsters: ["Gargoyle", "Animated Armor", "Phase Spider", "Wraith"],
+          possibleNPCs: ["Historian", "Treasure Hunter", "Cultist Leader", "Trapped Spirit"],
+          possibleMonsterMobs: ["Bandits", "Cultists", "Animated Objects", "Restless Dead"],
+          possibleMajorHazards: ["Magical Anomaly", "Reality Warp", "Time Distortion"],
+          possibleTreasures: ["Ancient Library", "Royal Treasury", "Magical Artifacts", "Historical Records"],
+          possibleBossMonsters: ["Ancient Construct", "Forgotten Deity", "Archmage Ghost", "Demonic Entity"]
+        }
+      },
+      defaultDungeonType: "Cave",
+      mapStyle: {
+        wallColor: "#4a9ebd",
+        // Blue wall color
+        floorColor: "#ffffff",
+        // White floor color
+        corridorColor: "#cccccc",
+        // Light gray for corridors
+        gridColor: "#cccccc",
+        // Light gray grid lines
+        textColor: "#000000",
+        // Black text for room numbers
+        useColors: true,
+        // Whether to use color-coding for room content
+        doorStyle: "line"
+        // Could be 'line', 'gap', or 'none'
+      }
+    };
+  }
+});
+
 // src/main.ts
 var main_exports = {};
 __export(main_exports, {
@@ -29,75 +112,7 @@ __export(main_exports, {
 });
 module.exports = __toCommonJS(main_exports);
 var import_obsidian3 = require("obsidian");
-
-// src/settings/defaults.ts
-var DEFAULT_SETTINGS = {
-  dungeonTypes: {
-    "Cave": {
-      name: "Cave",
-      possibleRooms: ["Cavern", "Grotto", "Tunnel", "Chamber", "Pool", "Crevasse", "Stalagmite Forest"],
-      possibleTraps: ["Pit Trap", "Rock Fall", "Poison Gas", "Slippery Slope"],
-      possibleMinorHazards: ["Slippery Ground", "Low Ceiling", "Unstable Floor"],
-      possibleSoloMonsters: ["Cave Bear", "Giant Bat", "Slime", "Troll"],
-      possibleNPCs: ["Lost Miner", "Hermit", "Cultist", "Refugee"],
-      possibleMonsterMobs: ["Goblins", "Kobolds", "Giant Spiders", "Bats"],
-      possibleMajorHazards: ["Underground River", "Lava Flow", "Collapsing Ceiling"],
-      possibleTreasures: ["Gem Vein", "Ancient Cache", "Forgotten Equipment", "Crystal Formation"],
-      possibleBossMonsters: ["Dragon", "Giant", "Chimera", "Elder Slime"]
-    },
-    "Tomb": {
-      name: "Tomb",
-      possibleRooms: ["Crypt", "Burial Chamber", "Sarcophagus Room", "Ceremonial Hall", "Treasure Vault"],
-      possibleTraps: ["Poison Dart", "Swinging Blade", "Collapsing Floor", "Curse Tablet"],
-      possibleMinorHazards: ["Cobwebs", "Crumbling Stairs", "Faded Inscriptions"],
-      possibleSoloMonsters: ["Mummy", "Skeleton Warrior", "Cursed Statue", "Ghost"],
-      possibleNPCs: ["Archaeologist", "Tomb Robber", "Cursed Noble", "Death Priest"],
-      possibleMonsterMobs: ["Skeletons", "Zombies", "Scarabs", "Animated Objects"],
-      possibleMajorHazards: ["Soul-draining Mist", "Time Loop", "Magical Ward"],
-      possibleTreasures: ["Royal Jewelry", "Ancient Artifacts", "Ceremonial Weapons", "Burial Masks"],
-      possibleBossMonsters: ["Lich", "Mummy Lord", "Death Knight", "Ancient Guardian"]
-    },
-    "Deep Tunnels": {
-      name: "Deep Tunnels",
-      possibleRooms: ["Mine Shaft", "Excavated Chamber", "Natural Cavity", "Crossroads", "Storage Room"],
-      possibleTraps: ["Mining Explosives", "Elevator Malfunction", "Flood Trap", "Cave-in"],
-      possibleMinorHazards: ["Poor Air Quality", "Rickety Supports", "Narrow Passage"],
-      possibleSoloMonsters: ["Giant Worm", "Rock Elemental", "Deep One", "Cave Fisher"],
-      possibleNPCs: ["Lost Explorer", "Mad Miner", "Deep Cult Priest", "Escaped Slave"],
-      possibleMonsterMobs: ["Duergar", "Troglodytes", "Hook Horrors", "Myconids"],
-      possibleMajorHazards: ["Bottomless Chasm", "Toxic Spore Cloud", "Underground Lake"],
-      possibleTreasures: ["Rare Minerals", "Dwarven Artifact", "Forgotten Cache", "Ancient Technology"],
-      possibleBossMonsters: ["Purple Worm", "Stone Titan", "Mind Flayer", "Beholder"]
-    },
-    "Ruins": {
-      name: "Ruins",
-      possibleRooms: ["Collapsed Hall", "Overgrown Chamber", "Broken Tower", "Former Library", "Throne Room"],
-      possibleTraps: ["Collapsing Wall", "Hidden Pitfall", "Ancient Magic Rune", "Animated Statue"],
-      possibleMinorHazards: ["Crumbling Floor", "Overgrown Vegetation", "Unstable Archway"],
-      possibleSoloMonsters: ["Gargoyle", "Animated Armor", "Phase Spider", "Wraith"],
-      possibleNPCs: ["Historian", "Treasure Hunter", "Cultist Leader", "Trapped Spirit"],
-      possibleMonsterMobs: ["Bandits", "Cultists", "Animated Objects", "Restless Dead"],
-      possibleMajorHazards: ["Magical Anomaly", "Reality Warp", "Time Distortion"],
-      possibleTreasures: ["Ancient Library", "Royal Treasury", "Magical Artifacts", "Historical Records"],
-      possibleBossMonsters: ["Ancient Construct", "Forgotten Deity", "Archmage Ghost", "Demonic Entity"]
-    }
-  },
-  defaultDungeonType: "Cave",
-  mapStyle: {
-    wallColor: "#4a9ebd",
-    // Blue wall color
-    floorColor: "#ffffff",
-    // White floor color
-    gridColor: "#cccccc",
-    // Light gray grid lines
-    textColor: "#000000",
-    // Black text for room numbers
-    useColors: true,
-    // Whether to use color-coding for room content
-    doorStyle: "line"
-    // Could be 'line', 'gap', or 'none'
-  }
-};
+init_defaults();
 
 // src/settings/settingsTab.ts
 var import_obsidian = require("obsidian");
@@ -106,31 +121,112 @@ var import_obsidian = require("obsidian");
 var DEFAULT_MAP_STYLE = {
   wallColor: "#4a9ebd",
   floorColor: "#ffffff",
+  corridorColor: "#cccccc",
   gridColor: "#cccccc",
   textColor: "#000000",
   useColors: true,
-  doorStyle: "line"
+  doorStyle: "line",
+  showGrid: true
 };
 
 // src/settings/settingsTab.ts
 var DungeonGeneratorSettingTab = class extends import_obsidian.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
+    this.activeTab = "general";
     this.plugin = plugin;
   }
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Dungeon Generator Settings" });
-    containerEl.createEl("h3", { text: "Map Style" });
+    containerEl.createEl("h1", { text: "Dungeon Generator Settings" });
+    const navContainer = containerEl.createDiv("nav-container");
+    navContainer.style.display = "flex";
+    navContainer.style.marginBottom = "20px";
+    navContainer.style.borderBottom = "1px solid var(--background-modifier-border)";
+    const createTab = (id, label) => {
+      const tab = navContainer.createEl("button", { text: label });
+      tab.style.padding = "8px 16px";
+      tab.style.border = "none";
+      tab.style.background = "none";
+      tab.style.cursor = "pointer";
+      tab.style.borderRadius = "4px 4px 0 0";
+      tab.style.marginRight = "4px";
+      if (id === this.activeTab) {
+        tab.style.borderBottom = "2px solid var(--interactive-accent)";
+        tab.style.fontWeight = "bold";
+        tab.style.color = "var(--interactive-accent)";
+      }
+      tab.addEventListener("click", () => {
+        this.activeTab = id;
+        this.display();
+      });
+      return tab;
+    };
+    createTab("general", "General");
+    createTab("map-style", "Map Style");
+    createTab("dungeon-types", "Dungeon Types");
+    createTab("color-legend", "Color Legend");
+    const contentContainer = containerEl.createDiv("content-container");
+    contentContainer.style.maxHeight = "500px";
+    contentContainer.style.overflowY = "auto";
+    contentContainer.style.padding = "10px";
+    contentContainer.style.border = "1px solid var(--background-modifier-border)";
+    contentContainer.style.borderRadius = "4px";
+    switch (this.activeTab) {
+      case "general":
+        this.addGeneralSettings(contentContainer);
+        break;
+      case "map-style":
+        this.addMapStyleSettings(contentContainer);
+        break;
+      case "dungeon-types":
+        this.addDungeonTypesSettings(contentContainer);
+        break;
+      case "color-legend":
+        this.addColorLegendSettings(contentContainer);
+        break;
+    }
+  }
+  /**
+   * General settings tab content
+   */
+  addGeneralSettings(containerEl) {
+    containerEl.createEl("h2", { text: "General Settings" });
+    new import_obsidian.Setting(containerEl).setName("Default Dungeon Type").setDesc("The default dungeon type when opening the generator").addDropdown((dropdown) => {
+      const dungeonTypes = Object.keys(this.plugin.settings.dungeonTypes);
+      dungeonTypes.forEach((type) => {
+        dropdown.addOption(type, type);
+      });
+      dropdown.setValue(this.plugin.settings.defaultDungeonType);
+      dropdown.onChange(async (value) => {
+        this.plugin.settings.defaultDungeonType = value;
+        await this.plugin.saveSettings();
+      });
+    });
+    new import_obsidian.Setting(containerEl).setName("Restore Default Data").setDesc("Restore all default dungeon types and content that may have been deleted.").addButton((button) => {
+      return button.setButtonText("Restore Defaults").setCta().onClick(async () => {
+        await this.restoreDefaultData();
+      });
+    });
+  }
+  /**
+   * Map Style settings tab content
+   */
+  addMapStyleSettings(containerEl) {
+    containerEl.createEl("h2", { text: "Map Style Settings" });
+    containerEl.createEl("p", {
+      text: "Customize the appearance of generated dungeon maps.",
+      cls: "setting-item-description"
+    });
     new import_obsidian.Setting(containerEl).setName("Wall Color").setDesc("The color of walls and obstacles").addText((text) => {
       var _a;
-      text.setPlaceholder("#4a9ebd").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.wallColor) || "#4a9ebd").onChange((value) => {
+      text.setPlaceholder("#4a9ebd").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.wallColor) || "#4a9ebd").onChange(async (value) => {
         if (!this.plugin.settings.mapStyle) {
           this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
         }
         this.plugin.settings.mapStyle.wallColor = value;
-        this.plugin.saveSettings();
+        await this.plugin.saveSettings();
       });
       if (typeof text.inputEl.type === "string") {
         try {
@@ -141,12 +237,28 @@ var DungeonGeneratorSettingTab = class extends import_obsidian.PluginSettingTab 
     });
     new import_obsidian.Setting(containerEl).setName("Floor Color").setDesc("The color of open floor spaces").addText((text) => {
       var _a;
-      text.setPlaceholder("#ffffff").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.floorColor) || "#ffffff").onChange((value) => {
+      text.setPlaceholder("#ffffff").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.floorColor) || "#ffffff").onChange(async (value) => {
         if (!this.plugin.settings.mapStyle) {
           this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
         }
         this.plugin.settings.mapStyle.floorColor = value;
-        this.plugin.saveSettings();
+        await this.plugin.saveSettings();
+      });
+      if (typeof text.inputEl.type === "string") {
+        try {
+          text.inputEl.type = "color";
+        } catch (e) {
+        }
+      }
+    });
+    new import_obsidian.Setting(containerEl).setName("Corridor Color").setDesc("The color of the corridors between rooms").addText((text) => {
+      var _a;
+      text.setPlaceholder("#cccccc").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.corridorColor) || "#cccccc").onChange(async (value) => {
+        if (!this.plugin.settings.mapStyle) {
+          this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
+        }
+        this.plugin.settings.mapStyle.corridorColor = value;
+        await this.plugin.saveSettings();
       });
       if (typeof text.inputEl.type === "string") {
         try {
@@ -157,12 +269,12 @@ var DungeonGeneratorSettingTab = class extends import_obsidian.PluginSettingTab 
     });
     new import_obsidian.Setting(containerEl).setName("Grid Color").setDesc("The color of grid lines").addText((text) => {
       var _a;
-      text.setPlaceholder("#cccccc").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.gridColor) || "#cccccc").onChange((value) => {
+      text.setPlaceholder("#cccccc").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.gridColor) || "#cccccc").onChange(async (value) => {
         if (!this.plugin.settings.mapStyle) {
           this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
         }
         this.plugin.settings.mapStyle.gridColor = value;
-        this.plugin.saveSettings();
+        await this.plugin.saveSettings();
       });
       if (typeof text.inputEl.type === "string") {
         try {
@@ -173,12 +285,12 @@ var DungeonGeneratorSettingTab = class extends import_obsidian.PluginSettingTab 
     });
     new import_obsidian.Setting(containerEl).setName("Text Color").setDesc("The color of room numbers and labels").addText((text) => {
       var _a;
-      text.setPlaceholder("#000000").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.textColor) || "#000000").onChange((value) => {
+      text.setPlaceholder("#000000").setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.textColor) || "#000000").onChange(async (value) => {
         if (!this.plugin.settings.mapStyle) {
           this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
         }
         this.plugin.settings.mapStyle.textColor = value;
-        this.plugin.saveSettings();
+        await this.plugin.saveSettings();
       });
       if (typeof text.inputEl.type === "string") {
         try {
@@ -189,12 +301,12 @@ var DungeonGeneratorSettingTab = class extends import_obsidian.PluginSettingTab 
     });
     new import_obsidian.Setting(containerEl).setName("Use Color-Coding").setDesc("Color-code rooms based on their content type").addToggle((toggle) => {
       var _a;
-      toggle.setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.useColors) !== void 0 ? this.plugin.settings.mapStyle.useColors : true).onChange((value) => {
+      toggle.setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.useColors) !== void 0 ? this.plugin.settings.mapStyle.useColors : true).onChange(async (value) => {
         if (!this.plugin.settings.mapStyle) {
           this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
         }
         this.plugin.settings.mapStyle.useColors = value;
-        this.plugin.saveSettings();
+        await this.plugin.saveSettings();
       });
     });
     new import_obsidian.Setting(containerEl).setName("Door Style").setDesc("How to represent doors between rooms").addDropdown((dropdown) => {
@@ -203,105 +315,486 @@ var DungeonGeneratorSettingTab = class extends import_obsidian.PluginSettingTab 
       dropdown.addOption("gap", "Gap");
       dropdown.addOption("none", "None");
       dropdown.setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.doorStyle) || "line");
-      dropdown.onChange((value) => {
+      dropdown.onChange(async (value) => {
         if (!this.plugin.settings.mapStyle) {
           this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
         }
         this.plugin.settings.mapStyle.doorStyle = value;
-        this.plugin.saveSettings();
+        await this.plugin.saveSettings();
       });
     });
-    containerEl.createEl("h3", { text: "Dungeon Content" });
-    new import_obsidian.Setting(containerEl).setName("Default Dungeon Type").setDesc("The default dungeon type when opening the generator").addDropdown((dropdown) => {
-      const dungeonTypes = Object.keys(this.plugin.settings.dungeonTypes);
-      dungeonTypes.forEach((type) => {
-        dropdown.addOption(type, type);
+    new import_obsidian.Setting(containerEl).setName("Show Grid").setDesc("Toggle visibility of the grid lines on the dungeon map").addToggle((toggle) => {
+      var _a;
+      toggle.setValue(((_a = this.plugin.settings.mapStyle) == null ? void 0 : _a.showGrid) !== false).onChange(async (value) => {
+        if (!this.plugin.settings.mapStyle) {
+          this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
+        }
+        this.plugin.settings.mapStyle.showGrid = value;
+        await this.plugin.saveSettings();
       });
-      dropdown.setValue(this.plugin.settings.defaultDungeonType);
-      dropdown.onChange((value) => {
-        this.plugin.settings.defaultDungeonType = value;
-        this.plugin.saveSettings();
-      });
-    });
-    Object.keys(this.plugin.settings.dungeonTypes).forEach((typeKey) => {
-      const dungeonType = this.plugin.settings.dungeonTypes[typeKey];
-      containerEl.createEl("h3", { text: `${dungeonType.name} Settings` });
-      this.addListSetting(containerEl, dungeonType, "possibleRooms", "Room Types", "Types of rooms that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleTraps", "Traps", "Traps that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleMinorHazards", "Minor Hazards", "Minor hazards that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleSoloMonsters", "Solo Monsters", "Solo monsters that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleNPCs", "NPCs", "NPCs that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleMonsterMobs", "Monster Mobs", "Groups of monsters that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleMajorHazards", "Major Hazards", "Major hazards that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleTreasures", "Treasures", "Treasures that can appear in this dungeon");
-      this.addListSetting(containerEl, dungeonType, "possibleBossMonsters", "Boss Monsters", "Boss monsters that can appear in this dungeon");
     });
   }
-  addListSetting(containerEl, dungeonType, property, name, desc) {
-    const setting = new import_obsidian.Setting(containerEl).setName(name).setDesc(desc);
-    const listEl = containerEl.createEl("div", {
-      cls: "dungeon-generator-list",
-      attr: { style: "margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" }
+  /**
+   * Dungeon Types settings tab content
+   */
+  addDungeonTypesSettings(containerEl) {
+    const dungeonTypesSection = containerEl.createDiv("dungeon-types-section");
+    const headerContainer = dungeonTypesSection.createDiv("section-header");
+    headerContainer.createEl("h2", { text: "Dungeon Types" });
+    headerContainer.createEl("p", {
+      text: "Manage the available dungeon types and their content.",
+      cls: "setting-item-description"
     });
-    const updateList = () => {
-      listEl.empty();
-      const items = dungeonType[property];
-      if (items.length === 0) {
-        listEl.createEl("div", { text: "No items yet" });
+    new import_obsidian.Setting(dungeonTypesSection).setName("Add New Dungeon Type").setDesc("Create a new dungeon type").addButton((button) => {
+      return button.setTooltip("Add Dungeon Type").setCta().setButtonText("+").onClick(() => this.openDungeonTypeModal());
+    });
+    const dungeonTypes = Object.keys(this.plugin.settings.dungeonTypes);
+    if (dungeonTypes.length === 0) {
+      dungeonTypesSection.createEl("p", {
+        text: "No dungeon types defined. Add one to get started.",
+        attr: { style: "font-style: italic; margin-top: 20px;" }
+      });
+    } else {
+      const typesContainer = dungeonTypesSection.createDiv("dungeon-types-container");
+      typesContainer.style.marginTop = "15px";
+      dungeonTypes.forEach((typeKey) => {
+        const dungeonType = this.plugin.settings.dungeonTypes[typeKey];
+        const typeItem = typesContainer.createDiv("dungeon-type-item");
+        typeItem.style.marginBottom = "10px";
+        typeItem.style.border = "1px solid var(--background-modifier-border)";
+        typeItem.style.borderRadius = "5px";
+        typeItem.style.overflow = "hidden";
+        const typeHeader = typeItem.createDiv("type-header");
+        typeHeader.style.padding = "10px";
+        typeHeader.style.backgroundColor = "var(--background-secondary)";
+        typeHeader.style.cursor = "pointer";
+        typeHeader.style.display = "flex";
+        typeHeader.style.justifyContent = "space-between";
+        typeHeader.style.alignItems = "center";
+        const typeTitle = typeHeader.createDiv("type-title");
+        typeTitle.style.fontWeight = "bold";
+        typeTitle.textContent = dungeonType.name;
+        const expandIcon = typeHeader.createDiv("expand-icon");
+        expandIcon.textContent = "\u25BC";
+        expandIcon.style.marginLeft = "10px";
+        const typeDetails = typeItem.createDiv("type-details");
+        typeDetails.style.padding = "10px";
+        typeDetails.style.borderTop = "1px solid var(--background-modifier-border)";
+        typeDetails.style.display = "none";
+        const contentTabsContainer = typeDetails.createDiv("content-tabs");
+        contentTabsContainer.style.display = "flex";
+        contentTabsContainer.style.flexWrap = "wrap";
+        contentTabsContainer.style.gap = "5px";
+        contentTabsContainer.style.marginBottom = "10px";
+        contentTabsContainer.style.borderBottom = "1px solid var(--background-modifier-border)";
+        contentTabsContainer.style.paddingBottom = "5px";
+        let activeContentTab = "rooms";
+        const contentTabContent = typeDetails.createDiv("content-tab-content");
+        contentTabContent.style.padding = "10px 0";
+        const showContentTab = (tabId) => {
+          activeContentTab = tabId;
+          const tabs = contentTabsContainer.querySelectorAll("button");
+          tabs.forEach((tab) => {
+            if (tab.id === `tab-${tabId}`) {
+              tab.style.borderBottom = "2px solid var(--interactive-accent)";
+              tab.style.color = "var(--interactive-accent)";
+              tab.style.fontWeight = "bold";
+            } else {
+              tab.style.borderBottom = "none";
+              tab.style.color = "var(--text-normal)";
+              tab.style.fontWeight = "normal";
+            }
+          });
+          contentTabContent.empty();
+          this.renderContentTypeList(contentTabContent, dungeonType, tabId, typeKey);
+        };
+        const createContentTab = (id, label) => {
+          const tab = contentTabsContainer.createEl("button", {
+            text: label,
+            attr: { id: `tab-${id}` }
+          });
+          tab.style.padding = "5px 10px";
+          tab.style.border = "none";
+          tab.style.borderRadius = "4px";
+          tab.style.background = "var(--background-primary-alt)";
+          tab.style.cursor = "pointer";
+          tab.style.fontSize = "0.85em";
+          if (id === activeContentTab) {
+            tab.style.borderBottom = "2px solid var(--interactive-accent)";
+            tab.style.color = "var(--interactive-accent)";
+            tab.style.fontWeight = "bold";
+          }
+          tab.addEventListener("click", () => {
+            showContentTab(id);
+          });
+        };
+        createContentTab("possibleRooms", "Rooms");
+        createContentTab("possibleTraps", "Traps");
+        createContentTab("possibleMinorHazards", "Minor Hazards");
+        createContentTab("possibleSoloMonsters", "Solo Monsters");
+        createContentTab("possibleNPCs", "NPCs");
+        createContentTab("possibleMonsterMobs", "Monster Mobs");
+        createContentTab("possibleMajorHazards", "Major Hazards");
+        createContentTab("possibleTreasures", "Treasures");
+        createContentTab("possibleBossMonsters", "Boss Monsters");
+        showContentTab("possibleRooms");
+        const typeActions = typeDetails.createDiv("type-actions");
+        typeActions.style.display = "flex";
+        typeActions.style.justifyContent = "flex-end";
+        typeActions.style.marginTop = "10px";
+        typeActions.style.borderTop = "1px solid var(--background-modifier-border)";
+        typeActions.style.paddingTop = "10px";
+        typeActions.style.gap = "5px";
+        new import_obsidian.ExtraButtonComponent(typeActions.createDiv()).setIcon("pencil").setTooltip("Edit Dungeon Type").onClick(() => {
+          this.openDungeonTypeModal(dungeonType, typeKey);
+        });
+        new import_obsidian.ExtraButtonComponent(typeActions.createDiv()).setIcon("trash").setTooltip("Delete Dungeon Type").onClick(async () => {
+          delete this.plugin.settings.dungeonTypes[typeKey];
+          await this.plugin.saveSettings();
+          this.display();
+        });
+        typeHeader.addEventListener("click", () => {
+          const expanded = typeDetails.style.display !== "none";
+          typeDetails.style.display = expanded ? "none" : "block";
+          expandIcon.textContent = expanded ? "\u25BC" : "\u25B2";
+        });
+      });
+    }
+  }
+  /**
+   * Color Legend settings tab content
+   */
+  addColorLegendSettings(containerEl) {
+    containerEl.createEl("h2", { text: "Room Color Legend" });
+    containerEl.createEl("p", {
+      text: "Preview the colors used for different room content types.",
+      cls: "setting-item-description"
+    });
+    const legendContainer = containerEl.createDiv("color-legend-container");
+    legendContainer.style.display = "grid";
+    legendContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(200px, 1fr))";
+    legendContainer.style.gap = "15px";
+    legendContainer.style.marginTop = "20px";
+    const contentTypes = {
+      "Empty": "#ffffff",
+      "Trap": "#ff9999",
+      "Minor Hazard": "#ffcc99",
+      "Solo Monster": "#ffff99",
+      "NPC": "#99ff99",
+      "Monster Mob": "#99ccff",
+      "Major Hazard": "#ff99ff",
+      "Treasure": "#ffcc00",
+      "Boss Monster": "#ff6666"
+    };
+    Object.entries(contentTypes).forEach(([type, color]) => {
+      const colorCard = legendContainer.createDiv("color-card");
+      colorCard.style.border = "1px solid var(--background-modifier-border)";
+      colorCard.style.borderRadius = "5px";
+      colorCard.style.overflow = "hidden";
+      const colorSwatch = colorCard.createDiv("color-swatch");
+      colorSwatch.style.height = "40px";
+      colorSwatch.style.backgroundColor = color;
+      colorSwatch.style.borderBottom = "1px solid var(--background-modifier-border)";
+      const typeLabel = colorCard.createDiv("type-label");
+      typeLabel.style.padding = "10px";
+      typeLabel.style.textAlign = "center";
+      typeLabel.style.fontWeight = "medium";
+      typeLabel.textContent = type;
+    });
+  }
+  /**
+   * Render a list of content items for a dungeon type
+   */
+  renderContentTypeList(container, dungeonType, propertyKey, dungeonTypeKey) {
+    let displayName = "";
+    switch (propertyKey) {
+      case "possibleRooms":
+        displayName = "Room Types";
+        break;
+      case "possibleTraps":
+        displayName = "Traps";
+        break;
+      case "possibleMinorHazards":
+        displayName = "Minor Hazards";
+        break;
+      case "possibleSoloMonsters":
+        displayName = "Solo Monsters";
+        break;
+      case "possibleNPCs":
+        displayName = "NPCs";
+        break;
+      case "possibleMonsterMobs":
+        displayName = "Monster Mobs";
+        break;
+      case "possibleMajorHazards":
+        displayName = "Major Hazards";
+        break;
+      case "possibleTreasures":
+        displayName = "Treasures";
+        break;
+      case "possibleBossMonsters":
+        displayName = "Boss Monsters";
+        break;
+      default:
+        displayName = String(propertyKey);
+    }
+    const headerContainer = container.createDiv("content-header");
+    headerContainer.style.display = "flex";
+    headerContainer.style.justifyContent = "space-between";
+    headerContainer.style.alignItems = "center";
+    headerContainer.style.marginBottom = "10px";
+    headerContainer.createEl("h3", {
+      text: displayName,
+      attr: { style: "margin: 0; font-size: 1em;" }
+    });
+    const addItemButton = headerContainer.createEl("button", {
+      text: "Add Item",
+      attr: { type: "button" }
+    });
+    addItemButton.style.fontSize = "0.8em";
+    addItemButton.style.padding = "2px 6px";
+    addItemButton.addEventListener("click", () => {
+      this.addContentItem(dungeonType, propertyKey, dungeonTypeKey);
+    });
+    const itemsList = container.createEl("ul");
+    itemsList.style.margin = "0";
+    itemsList.style.paddingLeft = "20px";
+    const items = dungeonType[propertyKey];
+    if (!items || items.length === 0) {
+      container.createEl("p", {
+        text: `No ${displayName.toLowerCase()} defined.`,
+        attr: { style: "color: var(--text-muted); font-style: italic; margin: 5px 0;" }
+      });
+    } else {
+      items.forEach((item, index) => {
+        const itemElement = itemsList.createEl("li");
+        itemElement.style.marginBottom = "5px";
+        itemElement.style.display = "flex";
+        itemElement.style.justifyContent = "space-between";
+        itemElement.style.alignItems = "center";
+        const itemText = itemElement.createSpan();
+        itemText.textContent = item;
+        const itemActions = itemElement.createDiv("item-actions");
+        itemActions.style.display = "flex";
+        itemActions.style.gap = "5px";
+        new import_obsidian.ExtraButtonComponent(itemActions.createDiv()).setIcon("pencil").setTooltip("Edit").onClick(() => {
+          this.editContentItem(dungeonType, propertyKey, index, dungeonTypeKey);
+        });
+        new import_obsidian.ExtraButtonComponent(itemActions.createDiv()).setIcon("trash").setTooltip("Delete").onClick(async () => {
+          dungeonType[propertyKey].splice(index, 1);
+          await this.plugin.saveSettings();
+          this.renderContentTypeList(container, dungeonType, propertyKey, dungeonTypeKey);
+        });
+      });
+    }
+  }
+  /**
+   * Add a new content item to a dungeon type
+   */
+  addContentItem(dungeonType, propertyKey, dungeonTypeKey) {
+    let itemType = "";
+    switch (propertyKey) {
+      case "possibleRooms":
+        itemType = "Room Type";
+        break;
+      case "possibleTraps":
+        itemType = "Trap";
+        break;
+      case "possibleMinorHazards":
+        itemType = "Minor Hazard";
+        break;
+      case "possibleSoloMonsters":
+        itemType = "Solo Monster";
+        break;
+      case "possibleNPCs":
+        itemType = "NPC";
+        break;
+      case "possibleMonsterMobs":
+        itemType = "Monster Mob";
+        break;
+      case "possibleMajorHazards":
+        itemType = "Major Hazard";
+        break;
+      case "possibleTreasures":
+        itemType = "Treasure";
+        break;
+      case "possibleBossMonsters":
+        itemType = "Boss Monster";
+        break;
+      default:
+        itemType = "Item";
+    }
+    const newValue = prompt(`Enter new ${itemType}:`);
+    if (newValue && newValue.trim() !== "") {
+      if (!dungeonType[propertyKey]) {
+        dungeonType[propertyKey] = [];
+      }
+      dungeonType[propertyKey].push(newValue.trim());
+      this.plugin.saveSettings();
+      const contentTabContent = document.querySelector(".content-tab-content");
+      if (contentTabContent) {
+        contentTabContent.empty();
+        this.renderContentTypeList(contentTabContent, dungeonType, propertyKey, dungeonTypeKey);
+      } else {
+        this.display();
+      }
+    }
+  }
+  /**
+   * Edit an existing content item
+   */
+  editContentItem(dungeonType, propertyKey, index, dungeonTypeKey) {
+    const items = dungeonType[propertyKey];
+    const currentValue = items[index];
+    let itemType = "";
+    switch (propertyKey) {
+      case "possibleRooms":
+        itemType = "Room Type";
+        break;
+      case "possibleTraps":
+        itemType = "Trap";
+        break;
+      case "possibleMinorHazards":
+        itemType = "Minor Hazard";
+        break;
+      case "possibleSoloMonsters":
+        itemType = "Solo Monster";
+        break;
+      case "possibleNPCs":
+        itemType = "NPC";
+        break;
+      case "possibleMonsterMobs":
+        itemType = "Monster Mob";
+        break;
+      case "possibleMajorHazards":
+        itemType = "Major Hazard";
+        break;
+      case "possibleTreasures":
+        itemType = "Treasure";
+        break;
+      case "possibleBossMonsters":
+        itemType = "Boss Monster";
+        break;
+      default:
+        itemType = "Item";
+    }
+    const updatedValue = prompt(`Edit ${itemType}:`, currentValue);
+    if (updatedValue && updatedValue.trim() !== "") {
+      items[index] = updatedValue.trim();
+      this.plugin.saveSettings();
+      const contentTabContent = document.querySelector(".content-tab-content");
+      if (contentTabContent) {
+        contentTabContent.empty();
+        this.renderContentTypeList(contentTabContent, dungeonType, propertyKey, dungeonTypeKey);
+      } else {
+        this.display();
+      }
+    }
+  }
+  /**
+   * Open Dungeon Type Modal for Adding/Editing
+   */
+  openDungeonTypeModal(existingType, typeKey) {
+    const modal = new import_obsidian.Modal(this.app);
+    modal.titleEl.setText(existingType ? `Edit ${existingType.name} Dungeon Type` : "Add New Dungeon Type");
+    let typeToEdit = existingType ? JSON.parse(JSON.stringify(existingType)) : {
+      name: "",
+      possibleRooms: [],
+      possibleTraps: [],
+      possibleMinorHazards: [],
+      possibleSoloMonsters: [],
+      possibleNPCs: [],
+      possibleMonsterMobs: [],
+      possibleMajorHazards: [],
+      possibleTreasures: [],
+      possibleBossMonsters: []
+    };
+    new import_obsidian.Setting(modal.contentEl).setName("Dungeon Type Name").setDesc("The name for this dungeon type (e.g., Cave, Tomb)").addText((text) => {
+      text.setValue(typeToEdit.name || "").setPlaceholder("Enter dungeon type name").onChange((value) => {
+        typeToEdit.name = value;
+      });
+      setTimeout(() => {
+        text.inputEl.focus();
+      }, 50);
+    });
+    if (typeKey) {
+      new import_obsidian.Setting(modal.contentEl).setName("Internal ID").setDesc("The internal identifier for this dungeon type (cannot be changed)").addText((text) => {
+        text.setValue(typeKey).setDisabled(true);
+      });
+    }
+    const footerEl = modal.contentEl.createDiv("button-container");
+    footerEl.style.display = "flex";
+    footerEl.style.justifyContent = "flex-end";
+    footerEl.style.marginTop = "20px";
+    footerEl.style.borderTop = "1px solid var(--background-modifier-border)";
+    footerEl.style.paddingTop = "10px";
+    footerEl.style.gap = "10px";
+    const cancelButton = footerEl.createEl("button", { text: "Cancel" });
+    cancelButton.addEventListener("click", () => {
+      modal.close();
+    });
+    const saveButton = footerEl.createEl("button", {
+      text: "Save Dungeon Type",
+      cls: "mod-cta"
+    });
+    saveButton.addEventListener("click", async () => {
+      if (!typeToEdit.name || typeToEdit.name.trim() === "") {
+        new import_obsidian.Notice("Dungeon type name is required");
         return;
       }
-      const itemsList = listEl.createEl("ul", {
-        attr: { style: "list-style-type: none; padding: 0; margin: 0;" }
-      });
-      items.forEach((item, index) => {
-        const itemRow = itemsList.createEl("li", {
-          attr: { style: "display: flex; justify-content: space-between; align-items: center; margin: 5px 0;" }
-        });
-        itemRow.createEl("span", { text: item });
-        const buttonsContainer = itemRow.createEl("div");
-        const editBtn = buttonsContainer.createEl("button", {
-          text: "Edit",
-          attr: {
-            style: "margin-right: 5px; padding: 2px 5px;",
-            type: "button"
-          }
-        });
-        editBtn.addEventListener("click", () => {
-          const newValue = prompt("Edit item:", item);
-          if (newValue && newValue.trim() !== "") {
-            const items2 = dungeonType[property];
-            items2[index] = newValue.trim();
-            this.plugin.saveSettings();
-            updateList();
-          }
-        });
-        const deleteBtn = buttonsContainer.createEl("button", {
-          text: "Delete",
-          attr: {
-            style: "padding: 2px 5px;",
-            type: "button"
-          }
-        });
-        deleteBtn.addEventListener("click", () => {
-          const items2 = dungeonType[property];
-          items2.splice(index, 1);
-          this.plugin.saveSettings();
-          updateList();
-        });
-      });
-    };
-    setting.addButton((button) => {
-      button.setButtonText("Add").onClick(() => {
-        const newValue = prompt("Enter new item:");
-        if (newValue && newValue.trim() !== "") {
-          const items = dungeonType[property];
-          items.push(newValue.trim());
-          this.plugin.saveSettings();
-          updateList();
+      let newTypeKey = typeKey;
+      if (!newTypeKey) {
+        const generatedKey = typeToEdit.name.replace(/\s+/g, "").replace(/[^a-zA-Z0-9]/g, "");
+        let counter = 0;
+        let baseKey = generatedKey;
+        newTypeKey = baseKey;
+        while (Object.prototype.hasOwnProperty.call(this.plugin.settings.dungeonTypes, newTypeKey)) {
+          counter++;
+          newTypeKey = `${baseKey}${counter}`;
         }
-      });
+      }
+      this.plugin.settings.dungeonTypes[newTypeKey] = typeToEdit;
+      await this.plugin.saveSettings();
+      modal.close();
+      this.display();
     });
-    updateList();
+    modal.open();
+  }
+  /**
+   * Restore default dungeon types and content
+   */
+  async restoreDefaultData() {
+    const confirmModal = new import_obsidian.Modal(this.app);
+    confirmModal.titleEl.setText("Restore Defaults");
+    confirmModal.contentEl.createEl("p", {
+      text: "This will restore all default dungeon types and content. Any custom modifications to the default types will be overwritten, but your custom dungeon types will remain untouched. Continue?"
+    });
+    const buttonContainer = confirmModal.contentEl.createDiv("button-container");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.justifyContent = "flex-end";
+    buttonContainer.style.marginTop = "20px";
+    buttonContainer.style.gap = "10px";
+    const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
+    cancelButton.addEventListener("click", () => {
+      confirmModal.close();
+    });
+    const confirmButton = buttonContainer.createEl("button", {
+      text: "Restore",
+      cls: "mod-warning"
+    });
+    confirmButton.addEventListener("click", async () => {
+      const { DEFAULT_SETTINGS: DEFAULT_SETTINGS2 } = await Promise.resolve().then(() => (init_defaults(), defaults_exports));
+      for (const typeKey in DEFAULT_SETTINGS2.dungeonTypes) {
+        this.plugin.settings.dungeonTypes[typeKey] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS2.dungeonTypes[typeKey]));
+      }
+      this.plugin.settings.mapStyle = { ...DEFAULT_MAP_STYLE };
+      this.plugin.settings.defaultDungeonType = DEFAULT_SETTINGS2.defaultDungeonType;
+      await this.plugin.saveSettings();
+      new import_obsidian.Notice("Default dungeon types and content have been restored!");
+      confirmModal.close();
+      this.display();
+    });
+    confirmModal.open();
   }
 };
 
@@ -317,41 +810,86 @@ var DungeonGeneratorModal = class extends import_obsidian2.Modal {
   }
   onOpen() {
     const { contentEl } = this;
-    contentEl.createEl("h2", { text: "Generate Dungeon" });
-    new import_obsidian2.Setting(contentEl).setName("Dungeon Type").setDesc("Select the type of dungeon to generate").addDropdown((dropdown) => {
+    contentEl.empty();
+    contentEl.addClass("dungeon-generator-modal");
+    contentEl.createEl("h2", {
+      text: "Generate Dungeon",
+      cls: "dungeon-generator-title"
+    });
+    const settingsContainer = contentEl.createDiv("dungeon-settings-container");
+    settingsContainer.style.marginBottom = "20px";
+    settingsContainer.style.padding = "15px";
+    settingsContainer.style.backgroundColor = "var(--background-secondary)";
+    settingsContainer.style.borderRadius = "5px";
+    new import_obsidian2.Setting(settingsContainer).setName("Dungeon Type").setDesc("Select the type of dungeon to generate").addDropdown((dropdown) => {
       const dungeonTypes = Object.keys(this.plugin.settings.dungeonTypes);
       dungeonTypes.forEach((type) => {
-        dropdown.addOption(type, type);
+        dropdown.addOption(type, this.plugin.settings.dungeonTypes[type].name);
       });
       dropdown.setValue(this.dungeonType);
       dropdown.onChange((value) => {
         this.dungeonType = value;
       });
     });
-    new import_obsidian2.Setting(contentEl).setName("Size").setDesc("Select the size of the dungeon").addDropdown((dropdown) => {
-      dropdown.addOption("Small", "Small");
-      dropdown.addOption("Medium", "Medium");
-      dropdown.addOption("Large", "Large");
+    new import_obsidian2.Setting(settingsContainer).setName("Size").setDesc("Select the size of the dungeon").addDropdown((dropdown) => {
+      dropdown.addOption("Small", "Small (5-8 rooms)");
+      dropdown.addOption("Medium", "Medium (8-12 rooms)");
+      dropdown.addOption("Large", "Large (12-20 rooms)");
       dropdown.setValue(this.size);
       dropdown.onChange((value) => {
         this.size = value;
       });
     });
-    new import_obsidian2.Setting(contentEl).addButton((button) => {
-      button.setButtonText("Generate").setCta().onClick(() => {
-        this.generateDungeon();
-      });
+    const generateButtonContainer = contentEl.createDiv("generate-button-container");
+    generateButtonContainer.style.textAlign = "center";
+    generateButtonContainer.style.marginBottom = "20px";
+    const generateButton = generateButtonContainer.createEl("button", {
+      text: "Generate Dungeon",
+      cls: "mod-cta"
     });
-    contentEl.createEl("div", { attr: { "id": "dungeon-preview" } });
-    const insertButtonContainer = contentEl.createEl("div", { attr: { "id": "insert-button-container", "style": "display: none;" } });
-    new import_obsidian2.Setting(insertButtonContainer).addButton((button) => {
-      button.setButtonText("Insert into Note").setCta().onClick(() => {
-        this.insertDungeonIntoNote();
-      });
-    }).addButton((button) => {
-      button.setButtonText("Regenerate").onClick(() => {
-        this.generateDungeon();
-      });
+    generateButton.style.padding = "8px 16px";
+    generateButton.style.fontSize = "1.1em";
+    generateButton.addEventListener("click", () => {
+      this.generateDungeon();
+    });
+    const previewContainer = contentEl.createDiv({
+      cls: "dungeon-preview-container",
+      attr: { "id": "dungeon-preview" }
+    });
+    previewContainer.style.display = "none";
+    previewContainer.style.maxHeight = "500px";
+    previewContainer.style.overflow = "auto";
+    previewContainer.style.textAlign = "center";
+    previewContainer.style.padding = "15px";
+    previewContainer.style.backgroundColor = "var(--background-secondary)";
+    previewContainer.style.borderRadius = "5px";
+    previewContainer.style.marginBottom = "20px";
+    const buttonContainer = contentEl.createDiv({
+      cls: "dungeon-buttons-container",
+      attr: { "id": "insert-button-container" }
+    });
+    buttonContainer.style.display = "none";
+    buttonContainer.style.textAlign = "center";
+    buttonContainer.style.gap = "10px";
+    const buttonRow = buttonContainer.createDiv("button-row");
+    buttonRow.style.display = "flex";
+    buttonRow.style.justifyContent = "center";
+    buttonRow.style.gap = "10px";
+    const insertButton = buttonRow.createEl("button", {
+      text: "Insert into Note",
+      cls: "mod-cta"
+    });
+    insertButton.style.padding = "8px 16px";
+    insertButton.addEventListener("click", () => {
+      this.insertDungeonIntoNote();
+    });
+    const regenerateButton = buttonRow.createEl("button", {
+      text: "Regenerate",
+      cls: ""
+    });
+    regenerateButton.style.padding = "8px 16px";
+    regenerateButton.addEventListener("click", () => {
+      this.generateDungeon();
     });
   }
   generateDungeon() {
@@ -359,15 +897,25 @@ var DungeonGeneratorModal = class extends import_obsidian2.Modal {
       dungeonType: this.dungeonType,
       size: this.size
     };
-    this.generatedDungeon = this.plugin.generateDungeon(options);
     const previewContainer = document.getElementById("dungeon-preview");
+    if (previewContainer) {
+      previewContainer.style.display = "block";
+      previewContainer.innerHTML = '<div style="padding: 30px; text-align: center;">Generating dungeon...</div>';
+    }
+    this.generatedDungeon = this.plugin.generateDungeon(options);
     if (previewContainer) {
       previewContainer.innerHTML = "";
       previewContainer.innerHTML = this.generatedDungeon.svg;
-      const insertButtonContainer = document.getElementById("insert-button-container");
-      if (insertButtonContainer) {
-        insertButtonContainer.style.display = "block";
-      }
+    }
+    const dungeonTitle = document.createElement("h3");
+    dungeonTitle.textContent = `${this.plugin.settings.dungeonTypes[this.dungeonType].name} - ${this.size}`;
+    dungeonTitle.style.marginBottom = "10px";
+    if (previewContainer && previewContainer.firstChild) {
+      previewContainer.insertBefore(dungeonTitle, previewContainer.firstChild);
+    }
+    const buttonContainer = document.getElementById("insert-button-container");
+    if (buttonContainer) {
+      buttonContainer.style.display = "block";
     }
   }
   insertDungeonIntoNote() {
@@ -376,11 +924,10 @@ var DungeonGeneratorModal = class extends import_obsidian2.Modal {
     const activeView = this.app.workspace.getActiveViewOfType(import_obsidian2.MarkdownView);
     if (activeView) {
       const editor = activeView.editor;
-      const timestamp = Date.now();
-      const filename = `dungeon-map-${timestamp}.svg`;
       const dungeonContent = `
-## Dungeon Map
-![Dungeon Map](data:image/svg+xml;base64,${btoa(this.generatedDungeon.svg)})
+## ${this.plugin.settings.dungeonTypes[this.dungeonType].name} Dungeon (${this.size})
+
+${this.generatedDungeon.svg}
 
 ${this.generatedDungeon.guide}
 `;
@@ -403,183 +950,124 @@ var SvgGenerator = class {
     this.mapStyle = mapStyle;
   }
   generateSVG(rooms, grid, gridSize, cellSize) {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const padding = 10;
     const svgWidth = gridSize * cellSize + padding * 2;
     const svgHeight = gridSize * cellSize + padding * 2;
     const wallColor = ((_a = this.mapStyle) == null ? void 0 : _a.wallColor) || "#4a9ebd";
     const floorColor = ((_b = this.mapStyle) == null ? void 0 : _b.floorColor) || "#ffffff";
-    const gridColor = ((_c = this.mapStyle) == null ? void 0 : _c.gridColor) || "#cccccc";
-    const textColor = ((_d = this.mapStyle) == null ? void 0 : _d.textColor) || "#000000";
-    const useColors = ((_e = this.mapStyle) == null ? void 0 : _e.useColors) !== void 0 ? this.mapStyle.useColors : true;
-    const doorStyle = ((_f = this.mapStyle) == null ? void 0 : _f.doorStyle) || "line";
+    const corridorColor = ((_c = this.mapStyle) == null ? void 0 : _c.corridorColor) || "#cccccc";
+    const gridColor = ((_d = this.mapStyle) == null ? void 0 : _d.gridColor) || "#dddddd";
+    const textColor = ((_e = this.mapStyle) == null ? void 0 : _e.textColor) || "#000000";
+    const useColors = ((_f = this.mapStyle) == null ? void 0 : _f.useColors) !== void 0 ? this.mapStyle.useColors : true;
+    const doorStyle = ((_g = this.mapStyle) == null ? void 0 : _g.doorStyle) || "line";
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">`;
-    svg += `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="${floorColor}" />`;
-    const allCells = [];
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
-        allCells.push({
-          x: x * cellSize + padding,
-          y: y * cellSize + padding,
-          gridX: x,
-          gridY: y,
-          isWall: true,
-          // By default, everything is a wall
-          isRoom: false,
-          roomId: null,
-          // Track if this cell belongs to a room
-          isDoor: false,
-          // Track if this is a door
-          isHorizontalDoor: false,
-          isCorridorIntersection: false
-          // Track corridor intersections
+    svg += `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="#000000" />`;
+    const roomCells = {};
+    const corridorCells = {};
+    const doorCells = {};
+    rooms.forEach((room) => {
+      for (let y = room.y; y < room.y + room.height; y++) {
+        for (let x = room.x; x < room.x + room.width; x++) {
+          const key = `${x},${y}`;
+          roomCells[key] = room;
+        }
+      }
+      if (room.doors) {
+        room.doors.forEach((door) => {
+          const key = `${door.x},${door.y}`;
+          doorCells[key] = door;
         });
       }
-    }
+    });
     for (let y = 0; y < gridSize; y++) {
       for (let x = 0; x < gridSize; x++) {
         if (grid[y][x]) {
-          const cellIndex = y * gridSize + x;
-          allCells[cellIndex].isWall = false;
-          const room = rooms.find((r) => r.x === x && r.y === y);
-          if (room) {
-            allCells[cellIndex].isRoom = true;
-            allCells[cellIndex].roomId = room.id;
-            allCells[cellIndex].roomType = room.contentType;
-          }
-          let isDoor = false;
-          let isHorizontalDoor = false;
-          rooms.forEach((room2) => {
-            if (room2.doors) {
-              room2.doors.forEach((door) => {
-                if (door.x === x && door.y === y) {
-                  isDoor = true;
-                  isHorizontalDoor = door.isHorizontal;
-                }
-              });
-            }
-          });
-          if (isDoor) {
-            allCells[cellIndex].isDoor = true;
-            allCells[cellIndex].isHorizontalDoor = isHorizontalDoor;
+          const key = `${x},${y}`;
+          if (!roomCells[key] && !doorCells[key]) {
+            corridorCells[key] = true;
           }
         }
       }
     }
-    for (let y = 1; y < gridSize - 1; y++) {
-      for (let x = 1; x < gridSize - 1; x++) {
-        const cellIndex = y * gridSize + x;
-        if (allCells[cellIndex].isWall || allCells[cellIndex].isRoom) {
-          continue;
-        }
-        let adjacentCorridors = 0;
-        const adjacentIndices = [
-          (y - 1) * gridSize + x,
-          // North
-          y * gridSize + (x + 1),
-          // East
-          (y + 1) * gridSize + x,
-          // South
-          y * gridSize + (x - 1)
-          // West
-        ];
-        for (const adjIndex of adjacentIndices) {
-          if (adjIndex >= 0 && adjIndex < allCells.length && !allCells[adjIndex].isWall && !allCells[adjIndex].isRoom) {
-            adjacentCorridors++;
-          }
-        }
-        if (adjacentCorridors >= 3) {
-          allCells[cellIndex].isCorridorIntersection = true;
-        }
-      }
-    }
-    svg += `<g fill="${wallColor}">`;
-    allCells.forEach((cell) => {
-      if (cell.isWall) {
-        svg += `<rect x="${cell.x}" y="${cell.y}" width="${cellSize}" height="${cellSize}" />`;
-      }
+    svg += `<g>`;
+    Object.keys(corridorCells).forEach((key) => {
+      const [x, y] = key.split(",").map(Number);
+      svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                         width="${cellSize}" height="${cellSize}" 
+                         fill="${corridorColor}" />`;
     });
     svg += `</g>`;
     if (useColors) {
       svg += `<g>`;
-      allCells.forEach((cell) => {
-        if (!cell.isWall && cell.isRoom) {
-          const room = rooms.find((r) => r.id === cell.roomId);
-          if (room) {
-            const roomColor = this.getRoomContentColor(room.contentType);
-            svg += `<rect x="${cell.x}" y="${cell.y}" width="${cellSize}" height="${cellSize}" fill="${roomColor}" opacity="0.3" />`;
-          }
-        }
+      rooms.forEach((room) => {
+        const roomColor = this.getRoomContentColor(room.contentType);
+        svg += `<rect x="${room.x * cellSize + padding}" y="${room.y * cellSize + padding}" 
+                         width="${room.width * cellSize}" height="${room.height * cellSize}" 
+                         fill="${roomColor}" />`;
+      });
+      svg += `</g>`;
+    } else {
+      svg += `<g>`;
+      rooms.forEach((room) => {
+        svg += `<rect x="${room.x * cellSize + padding}" y="${room.y * cellSize + padding}" 
+                         width="${room.width * cellSize}" height="${room.height * cellSize}" 
+                         fill="${floorColor}" />`;
       });
       svg += `</g>`;
     }
     if (doorStyle !== "none") {
-      svg += `<g stroke="${wallColor}" stroke-width="${cellSize / 4}" stroke-linecap="round">`;
-      let doorsFound = false;
-      allCells.forEach((cell) => {
-        if (cell.isDoor) {
-          doorsFound = true;
-          if (doorStyle === "line") {
-            if (cell.isHorizontalDoor) {
-              const lineX = cell.x + cellSize / 2;
-              svg += `<line x1="${lineX}" y1="${cell.y}" x2="${lineX}" y2="${cell.y + cellSize}" />`;
-            } else {
-              const lineY = cell.y + cellSize / 2;
-              svg += `<line x1="${cell.x}" y1="${lineY}" x2="${cell.x + cellSize}" y2="${lineY}" />`;
-            }
+      svg += `<g>`;
+      Object.entries(doorCells).forEach(([key, door]) => {
+        const [x, y] = key.split(",").map(Number);
+        if (doorStyle === "line") {
+          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${corridorColor}" />`;
+          if (door.isHorizontal) {
+            const lineY = y * cellSize + cellSize / 2 + padding;
+            const lineX1 = x * cellSize + padding;
+            const lineX2 = lineX1 + cellSize;
+            svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
+                                 stroke="${wallColor}" stroke-width="2" />`;
+          } else {
+            const lineX = x * cellSize + cellSize / 2 + padding;
+            const lineY1 = y * cellSize + padding;
+            const lineY2 = lineY1 + cellSize;
+            svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" 
+                                 stroke="${wallColor}" stroke-width="2" />`;
           }
+        } else if (doorStyle === "gap") {
+          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${corridorColor}" />`;
         }
       });
-      if (!doorsFound && doorStyle === "line") {
-        for (let y = 0; y < gridSize; y++) {
-          for (let x = 0; x < gridSize; x++) {
-            const idx = y * gridSize + x;
-            if (allCells[idx].isWall || allCells[idx].isRoom)
-              continue;
-            const directions = [
-              { dx: 0, dy: -1 },
-              // North
-              { dx: 1, dy: 0 },
-              // East
-              { dx: 0, dy: 1 },
-              // South
-              { dx: -1, dy: 0 }
-              // West
-            ];
-            for (const dir of directions) {
-              const nx = x + dir.dx;
-              const ny = y + dir.dy;
-              if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
-                const neighborIdx = ny * gridSize + nx;
-                if (neighborIdx >= 0 && neighborIdx < allCells.length && !allCells[neighborIdx].isWall && allCells[neighborIdx].isRoom) {
-                  const isHorizontal = dir.dx !== 0;
-                  if (isHorizontal) {
-                    const lineX = allCells[idx].x + cellSize / 2;
-                    svg += `<line x1="${lineX}" y1="${allCells[idx].y}" x2="${lineX}" y2="${allCells[idx].y + cellSize}" />`;
-                  } else {
-                    const lineY = allCells[idx].y + cellSize / 2;
-                    svg += `<line x1="${allCells[idx].x}" y1="${lineY}" x2="${allCells[idx].x + cellSize}" y2="${lineY}" />`;
-                  }
-                  break;
-                }
-              }
-            }
-          }
-        }
+      svg += `</g>`;
+    }
+    if (((_h = this.mapStyle) == null ? void 0 : _h.showGrid) !== false) {
+      svg += `<g stroke="${gridColor}" stroke-width="0.5">`;
+      for (let i = 0; i <= gridSize; i++) {
+        svg += `<line x1="${i * cellSize + padding}" y1="${padding}" x2="${i * cellSize + padding}" y2="${svgHeight - padding}" />`;
+        svg += `<line x1="${padding}" y1="${i * cellSize + padding}" x2="${svgWidth - padding}" y2="${i * cellSize + padding}" />`;
       }
       svg += `</g>`;
     }
-    svg += `<g stroke="${gridColor}" stroke-width="0.5">`;
-    for (let i = 0; i <= gridSize; i++) {
-      svg += `<line x1="${i * cellSize + padding}" y1="${padding}" x2="${i * cellSize + padding}" y2="${svgHeight - padding}" />`;
-      svg += `<line x1="${padding}" y1="${i * cellSize + padding}" x2="${svgWidth - padding}" y2="${i * cellSize + padding}" />`;
+    svg += `<g>`;
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        if (!grid[y][x] && !doorCells[key]) {
+          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" width="${cellSize}" height="${cellSize}" fill="${wallColor}" />`;
+        }
+      }
     }
     svg += `</g>`;
     svg += `<g font-family="Arial" font-size="${cellSize * 0.6}" text-anchor="middle" font-weight="bold" fill="${textColor}">`;
     rooms.forEach((room) => {
-      const x = room.x * cellSize + cellSize / 2 + padding;
-      const y = room.y * cellSize + cellSize / 2 + padding + 5;
-      svg += `<text x="${x}" y="${y}">${room.id}</text>`;
+      const centerX = room.x * cellSize + room.width * cellSize / 2 + padding;
+      const centerY = room.y * cellSize + room.height * cellSize / 2 + padding + 5;
+      svg += `<text x="${centerX}" y="${centerY}">${room.id}</text>`;
     });
     svg += `</g>`;
     svg += `</svg>`;
@@ -588,7 +1076,7 @@ var SvgGenerator = class {
   getRoomContentColor(contentType) {
     switch (contentType) {
       case "Empty":
-        return "#ffffff";
+        return "#aaaaaa";
       case "Trap":
         return "#ff9999";
       case "Minor Hazard":
@@ -606,7 +1094,7 @@ var SvgGenerator = class {
       case "Boss Monster":
         return "#ff6666";
       default:
-        return "#ffffff";
+        return "#aaaaaa";
     }
   }
 };
@@ -748,95 +1236,9 @@ var DungeonGenerator = class {
     numRooms = Math.max(numRooms, 3);
     const gridSize = sizeConfig.gridSize;
     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false));
-    for (let i = 0; i < numRooms; i++) {
-      let attempts = 0;
-      let placed = false;
-      while (!placed && attempts < 100) {
-        attempts++;
-        const x = Math.floor(Math.random() * (gridSize - 6)) + 3;
-        const y = Math.floor(Math.random() * (gridSize - 6)) + 3;
-        if (!grid[y][x]) {
-          let tooClose = false;
-          const minDistance = 2;
-          for (const existingRoom of rooms) {
-            const dx = Math.abs(existingRoom.x - x);
-            const dy = Math.abs(existingRoom.y - y);
-            if (dx < minDistance && dy < minDistance) {
-              tooClose = true;
-              break;
-            }
-          }
-          if (!tooClose) {
-            grid[y][x] = true;
-            const room = {
-              id: i + 1,
-              x,
-              y,
-              width: 1,
-              height: 1,
-              connections: [],
-              type: this.getRandomElement(dungeonType.possibleRooms),
-              content: "",
-              contentType: "Empty"
-            };
-            room.contentType = this.determineRoomContent(options.size);
-            room.content = this.getRoomContentByType(room.contentType, dungeonType);
-            if (room.contentType === "Boss Monster" && rooms.some((r) => r.contentType === "Boss Monster")) {
-              if (numRooms < 8 || Math.random() < 0.7) {
-                room.contentType = "Monster Mob";
-                room.content = this.getRandomElement(dungeonType.possibleMonsterMobs);
-              }
-            }
-            rooms.push(room);
-            placed = true;
-          }
-        }
-      }
-      if (!placed) {
-        break;
-      }
-    }
-    this.connectRooms(rooms, grid, gridSize);
-    const roomIdSet = new Set(rooms.map((room) => room.id));
-    const connectedRooms = /* @__PURE__ */ new Set([rooms[0].id]);
-    let changeMade = true;
-    while (changeMade && connectedRooms.size < roomIdSet.size) {
-      changeMade = false;
-      for (const room of rooms) {
-        if (!connectedRooms.has(room.id)) {
-          continue;
-        }
-        for (const connectedId of room.connections) {
-          if (!connectedRooms.has(connectedId)) {
-            connectedRooms.add(connectedId);
-            changeMade = true;
-          }
-        }
-      }
-    }
-    if (connectedRooms.size < roomIdSet.size) {
-      for (const room of rooms) {
-        if (!connectedRooms.has(room.id)) {
-          let closestRoom = null;
-          let minDistance = Infinity;
-          for (const connectedRoom of rooms) {
-            if (connectedRooms.has(connectedRoom.id)) {
-              const distance = Math.abs(room.x - connectedRoom.x) + Math.abs(room.y - connectedRoom.y);
-              if (distance < minDistance) {
-                minDistance = distance;
-                closestRoom = connectedRoom;
-              }
-            }
-          }
-          if (closestRoom) {
-            room.connections.push(closestRoom.id);
-            closestRoom.connections.push(room.id);
-            this.createPath(room, closestRoom, grid);
-            connectedRooms.add(room.id);
-          }
-        }
-      }
-    }
+    this.generateVariableSizedRooms(rooms, grid, gridSize, numRooms, dungeonType, options.size);
+    this.connectRoomsWithHallways(rooms, grid, gridSize);
+    this.placeDoors(rooms, grid);
     this.cleanupGrid(grid, rooms, gridSize);
     const svg = this.svgGenerator.generateSVG(rooms, grid, gridSize, sizeConfig.cellSize);
     const guide = this.guideGenerator.generateGuide(rooms, dungeonType.name);
@@ -849,13 +1251,457 @@ var DungeonGenerator = class {
   getSizeConfig(size) {
     switch (size) {
       case "Small":
-        return { minRooms: 5, maxRooms: 8, gridSize: 8, cellSize: 30 };
+        return { minRooms: 5, maxRooms: 8, gridSize: 24, cellSize: 20 };
       case "Medium":
-        return { minRooms: 8, maxRooms: 12, gridSize: 12, cellSize: 25 };
+        return { minRooms: 8, maxRooms: 12, gridSize: 32, cellSize: 16 };
       case "Large":
-        return { minRooms: 12, maxRooms: 20, gridSize: 16, cellSize: 20 };
+        return { minRooms: 12, maxRooms: 20, gridSize: 48, cellSize: 12 };
       default:
-        return { minRooms: 8, maxRooms: 12, gridSize: 12, cellSize: 25 };
+        return { minRooms: 8, maxRooms: 12, gridSize: 32, cellSize: 16 };
+    }
+  }
+  /**
+   * Generate rooms with variable sizes and different shapes
+   */
+  generateVariableSizedRooms(rooms, grid, gridSize, numRooms, dungeonType, size) {
+    const roomShapes = [
+      { name: "small-square", width: 2, height: 2, probability: 0.25 },
+      { name: "medium-square", width: 3, height: 3, probability: 0.2 },
+      { name: "large-square", width: 4, height: 4, probability: 0.1 },
+      { name: "small-rectangle-h", width: 3, height: 2, probability: 0.15 },
+      { name: "medium-rectangle-h", width: 4, height: 3, probability: 0.1 },
+      { name: "small-rectangle-v", width: 2, height: 3, probability: 0.15 },
+      { name: "medium-rectangle-v", width: 3, height: 4, probability: 0.05 }
+    ];
+    for (let i = 0; i < numRooms; i++) {
+      let attempts = 0;
+      let placed = false;
+      while (!placed && attempts < 50) {
+        attempts++;
+        const shape = this.selectRandomRoomShape(roomShapes);
+        const width = shape.width;
+        const height = shape.height;
+        const maxX = gridSize - width - 3;
+        const maxY = gridSize - height - 3;
+        const minPadding = 3;
+        const x = Math.floor(Math.random() * (maxX - minPadding)) + minPadding;
+        const y = Math.floor(Math.random() * (maxY - minPadding)) + minPadding;
+        if (this.isAreaFree(grid, x, y, width, height, 2)) {
+          for (let dy = 0; dy < height; dy++) {
+            for (let dx = 0; dx < width; dx++) {
+              grid[y + dy][x + dx] = true;
+            }
+          }
+          const room = {
+            id: i + 1,
+            x,
+            y,
+            width,
+            height,
+            connections: [],
+            type: this.getRandomElement(dungeonType.possibleRooms),
+            content: "",
+            contentType: "Empty",
+            shape: shape.name,
+            doors: [],
+            pathsTo: []
+          };
+          room.contentType = this.determineRoomContent(size);
+          room.content = this.getRoomContentByType(room.contentType, dungeonType);
+          if (room.contentType === "Boss Monster" && rooms.some((r) => r.contentType === "Boss Monster")) {
+            if (numRooms < 8 || Math.random() < 0.7) {
+              room.contentType = "Monster Mob";
+              room.content = this.getRandomElement(dungeonType.possibleMonsterMobs);
+            }
+          }
+          rooms.push(room);
+          placed = true;
+        }
+      }
+      if (!placed) {
+        break;
+      }
+    }
+  }
+  /**
+   * Select a random room shape based on probabilities
+   */
+  selectRandomRoomShape(shapes) {
+    const totalProb = shapes.reduce((sum, shape) => sum + shape.probability, 0);
+    const rand = Math.random() * totalProb;
+    let cumulativeProb = 0;
+    for (const shape of shapes) {
+      cumulativeProb += shape.probability;
+      if (rand <= cumulativeProb) {
+        return shape;
+      }
+    }
+    return shapes[0];
+  }
+  /**
+   * Check if an area in the grid is free (including a buffer zone)
+   */
+  isAreaFree(grid, x, y, width, height, buffer) {
+    for (let dy = -buffer; dy < height + buffer; dy++) {
+      for (let dx = -buffer; dx < width + buffer; dx++) {
+        const checkX = x + dx;
+        const checkY = y + dy;
+        if (checkX < 0 || checkY < 0 || checkX >= grid[0].length || checkY >= grid.length) {
+          continue;
+        }
+        if (grid[checkY][checkX]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  /**
+   * Connect rooms with proper hallways
+   */
+  connectRoomsWithHallways(rooms, grid, gridSize) {
+    if (rooms.length <= 1)
+      return;
+    const connected = /* @__PURE__ */ new Set([0]);
+    const unconnected = new Set(rooms.map((_, i) => i).filter((i) => i !== 0));
+    while (unconnected.size > 0) {
+      let bestDistance = Infinity;
+      let bestConnectedRoom = -1;
+      let bestUnconnectedRoom = -1;
+      let bestPath = [];
+      for (const connectedIdx of connected) {
+        const connectedRoom = rooms[connectedIdx];
+        for (const unconnectedIdx of unconnected) {
+          const unconnectedRoom = rooms[unconnectedIdx];
+          const path = this.findBestPath(connectedRoom, unconnectedRoom, grid, gridSize);
+          const pathLength = path.length;
+          if (pathLength < bestDistance) {
+            bestDistance = pathLength;
+            bestConnectedRoom = connectedIdx;
+            bestUnconnectedRoom = unconnectedIdx;
+            bestPath = path;
+          }
+        }
+      }
+      if (bestConnectedRoom !== -1 && bestUnconnectedRoom !== -1) {
+        const room1 = rooms[bestConnectedRoom];
+        const room2 = rooms[bestUnconnectedRoom];
+        room1.connections.push(room2.id);
+        room2.connections.push(room1.id);
+        this.markPathOnGrid(bestPath, grid);
+        if (!room1.pathsTo)
+          room1.pathsTo = [];
+        if (!room2.pathsTo)
+          room2.pathsTo = [];
+        room1.pathsTo.push({
+          roomId: room2.id,
+          path: bestPath
+        });
+        room2.pathsTo.push({
+          roomId: room1.id,
+          path: bestPath
+        });
+        connected.add(bestUnconnectedRoom);
+        unconnected.delete(bestUnconnectedRoom);
+      }
+    }
+    const extraConnections = Math.floor(rooms.length * 0.2) + 1;
+    for (let i = 0; i < extraConnections; i++) {
+      let bestDistance = Infinity;
+      let bestRoom1 = -1;
+      let bestRoom2 = -1;
+      let bestPath = [];
+      for (let r1 = 0; r1 < rooms.length; r1++) {
+        for (let r2 = r1 + 1; r2 < rooms.length; r2++) {
+          if (rooms[r1].connections.includes(rooms[r2].id)) {
+            continue;
+          }
+          const path = this.findBestPath(rooms[r1], rooms[r2], grid, gridSize);
+          const pathLength = path.length;
+          if (pathLength < bestDistance && pathLength < 15) {
+            bestDistance = pathLength;
+            bestRoom1 = r1;
+            bestRoom2 = r2;
+            bestPath = path;
+          }
+        }
+      }
+      if (bestRoom1 !== -1 && bestRoom2 !== -1) {
+        const room1 = rooms[bestRoom1];
+        const room2 = rooms[bestRoom2];
+        room1.connections.push(room2.id);
+        room2.connections.push(room1.id);
+        this.markPathOnGrid(bestPath, grid);
+        if (!room1.pathsTo)
+          room1.pathsTo = [];
+        if (!room2.pathsTo)
+          room2.pathsTo = [];
+        room1.pathsTo.push({
+          roomId: room2.id,
+          path: bestPath
+        });
+        room2.pathsTo.push({
+          roomId: room1.id,
+          path: bestPath
+        });
+      }
+    }
+  }
+  /**
+   * Find the best path between two rooms
+   */
+  findBestPath(room1, room2, grid, gridSize) {
+    const exits1 = this.findPotentialExits(room1, grid, gridSize);
+    const exits2 = this.findPotentialExits(room2, grid, gridSize);
+    let bestPath = [];
+    let bestDistance = Infinity;
+    for (const exit1 of exits1) {
+      for (const exit2 of exits2) {
+        const path = this.generatePathBetweenPoints(exit1, exit2, grid, gridSize);
+        if (path.length < bestDistance) {
+          bestDistance = path.length;
+          bestPath = path;
+        }
+      }
+    }
+    return bestPath;
+  }
+  /**
+   * Find potential exit points from a room
+   */
+  findPotentialExits(room, grid, gridSize) {
+    const exits = [];
+    for (let x = room.x; x < room.x + room.width; x++) {
+      const y = room.y - 1;
+      if (y >= 0 && !grid[y][x]) {
+        exits.push({ x, y, isDoor: false });
+      }
+    }
+    for (let x = room.x; x < room.x + room.width; x++) {
+      const y = room.y + room.height;
+      if (y < gridSize && !grid[y][x]) {
+        exits.push({ x, y, isDoor: false });
+      }
+    }
+    for (let y = room.y; y < room.y + room.height; y++) {
+      const x = room.x - 1;
+      if (x >= 0 && !grid[y][x]) {
+        exits.push({ x, y, isDoor: false });
+      }
+    }
+    for (let y = room.y; y < room.y + room.height; y++) {
+      const x = room.x + room.width;
+      if (x < gridSize && !grid[y][x]) {
+        exits.push({ x, y, isDoor: false });
+      }
+    }
+    if (exits.length === 0) {
+      if (room.x > 0 && room.y > 0 && !grid[room.y - 1][room.x - 1]) {
+        exits.push({ x: room.x - 1, y: room.y - 1, isDoor: false });
+      }
+      if (room.x + room.width < gridSize && room.y > 0 && !grid[room.y - 1][room.x + room.width]) {
+        exits.push({ x: room.x + room.width, y: room.y - 1, isDoor: false });
+      }
+      if (room.x > 0 && room.y + room.height < gridSize && !grid[room.y + room.height][room.x - 1]) {
+        exits.push({ x: room.x - 1, y: room.y + room.height, isDoor: false });
+      }
+      if (room.x + room.width < gridSize && room.y + room.height < gridSize && !grid[room.y + room.height][room.x + room.width]) {
+        exits.push({ x: room.x + room.width, y: room.y + room.height, isDoor: false });
+      }
+    }
+    return exits;
+  }
+  /**
+   * Generate a path between two points using A* pathfinding algorithm
+   */
+  generatePathBetweenPoints(start, end, grid, gridSize) {
+    const path = [];
+    const goHorizontalFirst = Math.random() > 0.5;
+    if (goHorizontalFirst) {
+      let x = start.x;
+      while (x !== end.x) {
+        x += x < end.x ? 1 : -1;
+        path.push({ x, y: start.y, isDoor: false });
+      }
+      let y = start.y;
+      while (y !== end.y) {
+        y += y < end.y ? 1 : -1;
+        path.push({ x: end.x, y, isDoor: false });
+      }
+    } else {
+      let y = start.y;
+      while (y !== end.y) {
+        y += y < end.y ? 1 : -1;
+        path.push({ x: start.x, y, isDoor: false });
+      }
+      let x = start.x;
+      while (x !== end.x) {
+        x += x < end.x ? 1 : -1;
+        path.push({ x, y: end.y, isDoor: false });
+      }
+    }
+    return path;
+  }
+  /**
+   * Mark a path on the grid
+   */
+  markPathOnGrid(path, grid) {
+    path.forEach((coord) => {
+      if (coord.x >= 0 && coord.x < grid[0].length && coord.y >= 0 && coord.y < grid.length) {
+        grid[coord.y][coord.x] = true;
+      }
+    });
+  }
+  /**
+   * Place doors at appropriate hallway-room junctions
+   */
+  placeDoors(rooms, grid) {
+    rooms.forEach((room) => {
+      if (!room.pathsTo)
+        return;
+      room.pathsTo.forEach((pathInfo) => {
+        const targetRoom = rooms.find((r) => r.id === pathInfo.roomId);
+        if (!targetRoom)
+          return;
+        const doorLocations = this.findDoorLocations(room, targetRoom, pathInfo.path, grid);
+        if (doorLocations.length > 0) {
+          const doorLocation = doorLocations[0];
+          const isHorizontal = this.isDoorHorizontal(doorLocation, room);
+          if (!room.doors)
+            room.doors = [];
+          room.doors.push({
+            x: doorLocation.x,
+            y: doorLocation.y,
+            isHorizontal,
+            connectsTo: targetRoom.id
+          });
+          if (!targetRoom.doors)
+            targetRoom.doors = [];
+          if (!targetRoom.doors.some((d) => d.x === doorLocation.x && d.y === doorLocation.y)) {
+            targetRoom.doors.push({
+              x: doorLocation.x,
+              y: doorLocation.y,
+              isHorizontal,
+              connectsTo: room.id
+            });
+          }
+          doorLocation.isDoor = true;
+        }
+      });
+    });
+  }
+  /**
+   * Find valid door locations between a room and a path
+   */
+  findDoorLocations(room1, room2, path, grid) {
+    const doorLocations = [];
+    for (const coord of path) {
+      if (this.isAdjacentToRoom(coord, room1)) {
+        doorLocations.push(coord);
+        break;
+      }
+    }
+    for (let i = path.length - 1; i >= 0; i--) {
+      const coord = path[i];
+      if (this.isAdjacentToRoom(coord, room2)) {
+        doorLocations.push(coord);
+        break;
+      }
+    }
+    return doorLocations;
+  }
+  /**
+   * Check if a coordinate is adjacent to a room
+   */
+  isAdjacentToRoom(coord, room) {
+    if (coord.y === room.y - 1 && coord.x >= room.x && coord.x < room.x + room.width) {
+      return true;
+    }
+    if (coord.y === room.y + room.height && coord.x >= room.x && coord.x < room.x + room.width) {
+      return true;
+    }
+    if (coord.x === room.x - 1 && coord.y >= room.y && coord.y < room.y + room.height) {
+      return true;
+    }
+    if (coord.x === room.x + room.width && coord.y >= room.y && coord.y < room.y + room.height) {
+      return true;
+    }
+    return false;
+  }
+  /**
+   * Determine if a door is horizontal (on top/bottom edge) or vertical (on left/right edge)
+   */
+  isDoorHorizontal(doorLocation, room) {
+    return doorLocation.y === room.y - 1 || doorLocation.y === room.y + room.height;
+  }
+  /**
+   * Clean up the grid to eliminate dead-end corridors and fix intersections
+   */
+  cleanupGrid(grid, rooms, gridSize) {
+    const corridorCells = [];
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        if (!grid[y][x])
+          continue;
+        const isRoom = rooms.some(
+          (r) => x >= r.x && x < r.x + r.width && y >= r.y && y < r.y + r.height
+        );
+        if (!isRoom) {
+          corridorCells.push({ x, y });
+        }
+      }
+    }
+    const directions = [
+      { dx: 0, dy: -1 },
+      // North
+      { dx: 1, dy: 0 },
+      // East
+      { dx: 0, dy: 1 },
+      // South
+      { dx: -1, dy: 0 }
+      // West
+    ];
+    let madeChanges = true;
+    let iterations = 0;
+    const maxIterations = 10;
+    while (madeChanges && iterations < maxIterations) {
+      madeChanges = false;
+      iterations++;
+      for (let i = corridorCells.length - 1; i >= 0; i--) {
+        const cell = corridorCells[i];
+        let adjacentOpenCells = 0;
+        let adjacentRooms = 0;
+        let isDoorCell = false;
+        rooms.forEach((room) => {
+          if (room.doors) {
+            if (room.doors.some((door) => door.x === cell.x && door.y === cell.y)) {
+              isDoorCell = true;
+            }
+          }
+        });
+        if (isDoorCell)
+          continue;
+        for (const dir of directions) {
+          const nx = cell.x + dir.dx;
+          const ny = cell.y + dir.dy;
+          if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
+            if (grid[ny][nx]) {
+              adjacentOpenCells++;
+              const isAdjacentRoom = rooms.some(
+                (r) => nx >= r.x && nx < r.x + r.width && ny >= r.y && ny < r.y + r.height
+              );
+              if (isAdjacentRoom) {
+                adjacentRooms++;
+              }
+            }
+          }
+        }
+        if (adjacentOpenCells <= 1 && adjacentRooms === 0) {
+          grid[cell.y][cell.x] = false;
+          corridorCells.splice(i, 1);
+          madeChanges = true;
+        }
+      }
     }
   }
   determineRoomContent(size) {
@@ -907,247 +1753,6 @@ var DungeonGenerator = class {
   }
   getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
-  }
-  connectRooms(rooms, grid, gridSize) {
-    if (rooms.length <= 1)
-      return;
-    let startRoomIndex = 0;
-    const centerX = gridSize / 2;
-    const centerY = gridSize / 2;
-    let minDistToCenter = Infinity;
-    rooms.forEach((room, index) => {
-      const distToCenter = Math.sqrt(
-        Math.pow(room.x - centerX, 2) + Math.pow(room.y - centerY, 2)
-      );
-      if (distToCenter < minDistToCenter) {
-        minDistToCenter = distToCenter;
-        startRoomIndex = index;
-      }
-    });
-    const connected = /* @__PURE__ */ new Set([startRoomIndex]);
-    const unconnected = new Set(rooms.map((_, i) => i).filter((i) => i !== startRoomIndex));
-    while (unconnected.size > 0) {
-      let minDistance = Infinity;
-      let bestConnectedRoom = -1;
-      let bestUnconnectedRoom = -1;
-      for (const connectedIndex of connected) {
-        for (const unconnectedIndex of unconnected) {
-          const connectedRoom = rooms[connectedIndex];
-          const unconnectedRoom = rooms[unconnectedIndex];
-          const distance = Math.abs(connectedRoom.x - unconnectedRoom.x) + Math.abs(connectedRoom.y - unconnectedRoom.y);
-          let adjustedDistance = distance;
-          if (connectedRoom.x === unconnectedRoom.x || connectedRoom.y === unconnectedRoom.y) {
-            adjustedDistance *= 0.9;
-          }
-          if (adjustedDistance < minDistance) {
-            minDistance = adjustedDistance;
-            bestConnectedRoom = connectedIndex;
-            bestUnconnectedRoom = unconnectedIndex;
-          }
-        }
-      }
-      if (bestConnectedRoom !== -1 && bestUnconnectedRoom !== -1) {
-        rooms[bestConnectedRoom].connections.push(rooms[bestUnconnectedRoom].id);
-        rooms[bestUnconnectedRoom].connections.push(rooms[bestConnectedRoom].id);
-        connected.add(bestUnconnectedRoom);
-        unconnected.delete(bestUnconnectedRoom);
-        this.createPath(
-          rooms[bestConnectedRoom],
-          rooms[bestUnconnectedRoom],
-          grid
-        );
-      }
-    }
-    const extraConnections = Math.floor(rooms.length * 0.2) + 1;
-    for (let i = 0; i < extraConnections; i++) {
-      const potentialConnections = [];
-      for (let r1 = 0; r1 < rooms.length; r1++) {
-        for (let r2 = r1 + 1; r2 < rooms.length; r2++) {
-          if (rooms[r1].connections.includes(rooms[r2].id)) {
-            continue;
-          }
-          const distance = Math.abs(rooms[r1].x - rooms[r2].x) + Math.abs(rooms[r1].y - rooms[r2].y);
-          if (distance <= 3) {
-            potentialConnections.push({
-              room1: r1,
-              room2: r2,
-              distance
-            });
-          }
-        }
-      }
-      if (potentialConnections.length > 0) {
-        potentialConnections.sort((a, b) => a.distance - b.distance);
-        const connection = potentialConnections[0];
-        rooms[connection.room1].connections.push(rooms[connection.room2].id);
-        rooms[connection.room2].connections.push(rooms[connection.room1].id);
-        this.createPath(rooms[connection.room1], rooms[connection.room2], grid);
-      } else {
-        const room1Index = Math.floor(Math.random() * rooms.length);
-        let room2Index = Math.floor(Math.random() * rooms.length);
-        while (room2Index === room1Index || rooms[room1Index].connections.includes(rooms[room2Index].id)) {
-          room2Index = Math.floor(Math.random() * rooms.length);
-        }
-        rooms[room1Index].connections.push(rooms[room2Index].id);
-        rooms[room2Index].connections.push(rooms[room1Index].id);
-        this.createPath(rooms[room1Index], rooms[room2Index], grid);
-      }
-    }
-  }
-  createPath(room1, room2, grid) {
-    const startX = room1.x;
-    const startY = room1.y;
-    const endX = room2.x;
-    const endY = room2.y;
-    const pathCoordinates = [];
-    const goHorizontalFirst = Math.random() > 0.5;
-    if (goHorizontalFirst) {
-      let x = startX;
-      while (x !== endX) {
-        x += x < endX ? 1 : -1;
-        pathCoordinates.push({ x, y: startY, isDoor: false });
-      }
-      let y = startY;
-      while (y !== endY) {
-        y += y < endY ? 1 : -1;
-        pathCoordinates.push({ x: endX, y, isDoor: false });
-      }
-    } else {
-      let y = startY;
-      while (y !== endY) {
-        y += y < endY ? 1 : -1;
-        pathCoordinates.push({ x: startX, y, isDoor: false });
-      }
-      let x = startX;
-      while (x !== endX) {
-        x += x < endX ? 1 : -1;
-        pathCoordinates.push({ x, y: endY, isDoor: false });
-      }
-    }
-    pathCoordinates.forEach((coord) => {
-      if (coord.x >= 0 && coord.x < grid[0].length && coord.y >= 0 && coord.y < grid.length) {
-        grid[coord.y][coord.x] = true;
-      }
-    });
-    if (pathCoordinates.length > 0) {
-      const doorCoord1 = {
-        x: pathCoordinates[0].x,
-        y: pathCoordinates[0].y,
-        isDoor: true,
-        isHorizontal: pathCoordinates[0].y === room1.y
-      };
-      const doorCoord2 = {
-        x: pathCoordinates[pathCoordinates.length - 1].x,
-        y: pathCoordinates[pathCoordinates.length - 1].y,
-        isDoor: true,
-        isHorizontal: pathCoordinates[pathCoordinates.length - 1].x === room2.x
-      };
-      if (!room1.doors)
-        room1.doors = [];
-      if (!room2.doors)
-        room2.doors = [];
-      room1.doors.push({
-        x: doorCoord1.x,
-        y: doorCoord1.y,
-        isHorizontal: doorCoord1.isHorizontal,
-        connectsTo: room2.id
-      });
-      room2.doors.push({
-        x: doorCoord2.x,
-        y: doorCoord2.y,
-        isHorizontal: doorCoord2.isHorizontal,
-        connectsTo: room1.id
-      });
-    }
-    if (!room1.pathsTo)
-      room1.pathsTo = [];
-    if (!room2.pathsTo)
-      room2.pathsTo = [];
-    room1.pathsTo.push({
-      roomId: room2.id,
-      path: pathCoordinates
-    });
-    room2.pathsTo.push({
-      roomId: room1.id,
-      path: pathCoordinates
-    });
-  }
-  cleanupGrid(grid, rooms, gridSize) {
-    const directions = [
-      { dx: 0, dy: -1 },
-      // North
-      { dx: 1, dy: 0 },
-      // East
-      { dx: 0, dy: 1 },
-      // South
-      { dx: -1, dy: 0 }
-      // West
-    ];
-    const corridorCells = [];
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
-        if (!grid[y][x])
-          continue;
-        const isRoom = rooms.some((room) => room.x === x && room.y === y);
-        if (!isRoom) {
-          corridorCells.push({ x, y });
-        }
-      }
-    }
-    for (const cell of corridorCells) {
-      let adjacentOpenCells = 0;
-      let adjacentRooms = 0;
-      for (const dir of directions) {
-        const nx = cell.x + dir.dx;
-        const ny = cell.y + dir.dy;
-        if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
-          if (grid[ny][nx]) {
-            adjacentOpenCells++;
-            if (rooms.some((room) => room.x === nx && room.y === ny)) {
-              adjacentRooms++;
-            }
-          }
-        }
-      }
-      if (adjacentOpenCells <= 1 && adjacentRooms === 0) {
-        grid[cell.y][cell.x] = false;
-      }
-      if (adjacentOpenCells >= 3) {
-        grid[cell.y][cell.x] = true;
-      }
-    }
-    let madeChanges = true;
-    let maxIterations = 10;
-    let iteration = 0;
-    while (madeChanges && iteration < maxIterations) {
-      madeChanges = false;
-      iteration++;
-      for (let y = 0; y < gridSize; y++) {
-        for (let x = 0; x < gridSize; x++) {
-          if (!grid[y][x] || rooms.some((room) => room.x === x && room.y === y)) {
-            continue;
-          }
-          let adjacentOpenCells = 0;
-          let adjacentRooms = 0;
-          for (const dir of directions) {
-            const nx = x + dir.dx;
-            const ny = y + dir.dy;
-            if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
-              if (grid[ny][nx]) {
-                adjacentOpenCells++;
-                if (rooms.some((room) => room.x === nx && room.y === ny)) {
-                  adjacentRooms++;
-                }
-              }
-            }
-          }
-          if (adjacentOpenCells <= 1 && adjacentRooms === 0) {
-            grid[y][x] = false;
-            madeChanges = true;
-          }
-        }
-      }
-    }
   }
 };
 
