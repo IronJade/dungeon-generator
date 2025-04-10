@@ -963,65 +963,43 @@ var SvgGenerator = class {
     const doorStyle = ((_g = this.mapStyle) == null ? void 0 : _g.doorStyle) || "line";
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">`;
     svg += `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="#000000" />`;
-    const roomCells = {};
-    const corridorCells = {};
-    const doorCells = {};
+    const cellTypes = {};
+    const doorLocations = {};
     rooms.forEach((room) => {
       for (let y = room.y; y < room.y + room.height; y++) {
         for (let x = room.x; x < room.x + room.width; x++) {
           const key = `${x},${y}`;
-          roomCells[key] = room;
+          cellTypes[key] = "room";
         }
       }
       if (room.doors) {
         room.doors.forEach((door) => {
           const key = `${door.x},${door.y}`;
-          doorCells[key] = door;
+          cellTypes[key] = "door";
+          doorLocations[key] = door;
+        });
+      }
+    });
+    rooms.forEach((room) => {
+      if (room.pathsTo) {
+        room.pathsTo.forEach((pathInfo) => {
+          pathInfo.path.forEach((coord) => {
+            const key = `${coord.x},${coord.y}`;
+            if (!cellTypes[key]) {
+              cellTypes[key] = "corridor";
+            }
+          });
         });
       }
     });
     for (let y = 0; y < gridSize; y++) {
       for (let x = 0; x < gridSize; x++) {
-        if (grid[y][x]) {
-          const key = `${x},${y}`;
-          if (!roomCells[key] && !doorCells[key]) {
-            corridorCells[key] = true;
-          }
-        }
-      }
-      rooms.forEach((room) => {
-        if (room.pathsTo) {
-          room.pathsTo.forEach((pathInfo) => {
-            pathInfo.path.forEach((coord) => {
-              const key = `${coord.x},${coord.y}`;
-              if (!roomCells[key] && !doorCells[key]) {
-                corridorCells[key] = true;
-              }
-            });
-          });
-        }
-      });
-    }
-    svg += `<g>`;
-    Object.keys(corridorCells).forEach((key) => {
-      const [x, y] = key.split(",").map(Number);
-      svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                         width="${cellSize}" height="${cellSize}" 
-                         fill="${corridorColor}" />`;
-    });
-    svg += `</g>`;
-    svg += `<g>`;
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
         const key = `${x},${y}`;
-        if (grid[y][x] && !roomCells[key] && !doorCells[key]) {
-          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                             width="${cellSize}" height="${cellSize}" 
-                             fill="${corridorColor}" />`;
+        if (!cellTypes[key]) {
+          cellTypes[key] = grid[y][x] ? "wall" : "wall";
         }
       }
     }
-    svg += `</g>`;
     if (useColors) {
       svg += `<g>`;
       rooms.forEach((room) => {
@@ -1040,24 +1018,44 @@ var SvgGenerator = class {
       });
       svg += `</g>`;
     }
+    svg += `<g>`;
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        if (cellTypes[key] === "corridor" || cellTypes[key] === "door") {
+          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${corridorColor}" />`;
+        }
+      }
+    }
+    svg += `</g>`;
+    svg += `<g>`;
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        if (cellTypes[key] === "wall") {
+          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${wallColor}" />`;
+        }
+      }
+    }
+    svg += `</g>`;
     if (doorStyle !== "none") {
-      svg += `<g>`;
-      Object.entries(doorCells).forEach(([key, door]) => {
+      svg += `<g stroke="${wallColor}" stroke-width="2">`;
+      Object.entries(doorLocations).forEach(([key, door]) => {
         const [x, y] = key.split(",").map(Number);
-        if (doorStyle === "line") {
-          if (door.isHorizontal) {
-            const lineX = x * cellSize + padding;
-            const lineY1 = y * cellSize + padding;
-            const lineY2 = lineY1 + cellSize;
-            svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" 
-                                 stroke="${wallColor}" stroke-width="2" />`;
-          } else {
-            const lineY = y * cellSize + padding;
-            const lineX1 = x * cellSize + padding;
-            const lineX2 = lineX1 + cellSize;
-            svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
-                                 stroke="${wallColor}" stroke-width="2" />`;
-          }
+        if (door.isHorizontal) {
+          const lineY = y * cellSize + padding;
+          const lineX1 = x * cellSize + padding;
+          const lineX2 = lineX1 + cellSize;
+          svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" />`;
+        } else {
+          const lineX = x * cellSize + padding;
+          const lineY1 = y * cellSize + padding;
+          const lineY2 = lineY1 + cellSize;
+          svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" />`;
         }
       });
       svg += `</g>`;
@@ -1070,16 +1068,6 @@ var SvgGenerator = class {
       }
       svg += `</g>`;
     }
-    svg += `<g>`;
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
-        const key = `${x},${y}`;
-        if (!grid[y][x] && !doorCells[key]) {
-          svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" width="${cellSize}" height="${cellSize}" fill="${wallColor}" />`;
-        }
-      }
-    }
-    svg += `</g>`;
     svg += `<g font-family="Arial" font-size="${cellSize * 0.6}" text-anchor="middle" font-weight="bold" fill="${textColor}">`;
     rooms.forEach((room) => {
       const centerX = room.x * cellSize + room.width * cellSize / 2 + padding;
@@ -1591,37 +1579,37 @@ var DungeonGenerator = class {
         const targetRoom = rooms.find((r) => r.id === pathInfo.roomId);
         if (!targetRoom)
           return;
-        const doorLocations = this.findPreciseDoorLocations(room, targetRoom, pathInfo.path, grid);
-        if (doorLocations.length > 0) {
-          doorLocations.forEach((doorLocation) => {
-            const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
-            this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
-            this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
-          });
+        const doorLocation = this.findDoorLocation(room, targetRoom, pathInfo.path);
+        if (doorLocation) {
+          const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
+          this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
+          this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
         }
       });
     });
   }
-  findPreciseDoorLocations(room1, room2, path, grid) {
-    const doorLocations = [];
-    const entryPoint = this.findPathEntryPoint(room1, path);
-    const exitPoint = this.findPathEntryPoint(room2, path.slice().reverse());
-    if (entryPoint)
-      doorLocations.push(entryPoint);
-    if (exitPoint)
-      doorLocations.push(exitPoint);
-    return doorLocations;
-  }
-  findPathEntryPoint(room, path) {
+  findDoorLocation(room1, room2, path) {
     for (const coord of path) {
-      if (this.isCoordinateOnRoomEdge(coord, room)) {
+      if (this.isCoordinateOnRoomEdge(coord, room1)) {
         return coord;
       }
     }
     return null;
   }
   isCoordinateOnRoomEdge(coord, room) {
-    return (coord.x === room.x - 1 || coord.x === room.x + room.width) && coord.y >= room.y && coord.y < room.y + room.height || (coord.y === room.y - 1 || coord.y === room.y + room.height) && coord.x >= room.x && coord.x < room.x + room.width;
+    if (coord.y === room.y - 1 && coord.x >= room.x && coord.x < room.x + room.width) {
+      return true;
+    }
+    if (coord.y === room.y + room.height && coord.x >= room.x && coord.x < room.x + room.width) {
+      return true;
+    }
+    if (coord.x === room.x - 1 && coord.y >= room.y && coord.y < room.y + room.height) {
+      return true;
+    }
+    if (coord.x === room.x + room.width && coord.y >= room.y && coord.y < room.y + room.height) {
+      return true;
+    }
+    return false;
   }
   determineDoorOrientation(doorLocation, room1, room2) {
     const onHorizontalEdge = doorLocation.y === room1.y - 1 || doorLocation.y === room1.y + room1.height || (doorLocation.y === room2.y - 1 || doorLocation.y === room2.y + room2.height);
@@ -1687,69 +1675,36 @@ var DungeonGenerator = class {
    * Clean up the grid to eliminate dead-end corridors and fix intersections
    */
   cleanupGrid(grid, rooms, gridSize) {
-    const corridorCells = [];
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
-        if (!grid[y][x])
-          continue;
-        const isRoom = rooms.some(
-          (r) => x >= r.x && x < r.x + r.width && y >= r.y && y < r.y + r.height
-        );
-        if (!isRoom) {
-          corridorCells.push({ x, y });
+    const occupiedCells = /* @__PURE__ */ new Set();
+    rooms.forEach((room) => {
+      for (let y = room.y; y < room.y + room.height; y++) {
+        for (let x = room.x; x < room.x + room.width; x++) {
+          occupiedCells.add(`${x},${y}`);
         }
       }
-    }
-    const directions = [
-      { dx: 0, dy: -1 },
-      // North
-      { dx: 1, dy: 0 },
-      // East
-      { dx: 0, dy: 1 },
-      // South
-      { dx: -1, dy: 0 }
-      // West
-    ];
-    let madeChanges = true;
-    let iterations = 0;
-    const maxIterations = 10;
-    while (madeChanges && iterations < maxIterations) {
-      madeChanges = false;
-      iterations++;
-      for (let i = corridorCells.length - 1; i >= 0; i--) {
-        const cell = corridorCells[i];
-        let adjacentOpenCells = 0;
-        let adjacentRooms = 0;
-        let isDoorCell = false;
-        rooms.forEach((room) => {
-          if (room.doors) {
-            if (room.doors.some((door) => door.x === cell.x && door.y === cell.y)) {
-              isDoorCell = true;
-            }
-          }
+    });
+    rooms.forEach((room) => {
+      if (room.pathsTo) {
+        room.pathsTo.forEach((pathInfo) => {
+          pathInfo.path.forEach((coord) => {
+            const key = `${coord.x},${coord.y}`;
+            occupiedCells.add(key);
+          });
         });
-        if (isDoorCell)
-          continue;
-        for (const dir of directions) {
-          const nx = cell.x + dir.dx;
-          const ny = cell.y + dir.dy;
-          if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
-            if (grid[ny][nx]) {
-              adjacentOpenCells++;
-              const isAdjacentRoom = rooms.some(
-                (r) => nx >= r.x && nx < r.x + r.width && ny >= r.y && ny < r.y + r.height
-              );
-              if (isAdjacentRoom) {
-                adjacentRooms++;
-              }
-            }
-          }
-        }
-        if (adjacentOpenCells <= 1 && adjacentRooms === 0) {
-          grid[cell.y][cell.x] = false;
-          corridorCells.splice(i, 1);
-          madeChanges = true;
-        }
+      }
+    });
+    rooms.forEach((room) => {
+      if (room.doors) {
+        room.doors.forEach((door) => {
+          const key = `${door.x},${door.y}`;
+          occupiedCells.add(key);
+        });
+      }
+    });
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const key = `${x},${y}`;
+        grid[y][x] = occupiedCells.has(key);
       }
     }
   }

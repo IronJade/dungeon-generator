@@ -16,7 +16,7 @@ export class SvgGenerator {
         // Get colors from settings
         const wallColor = this.mapStyle?.wallColor || '#4a9ebd';
         const floorColor = this.mapStyle?.floorColor || '#ffffff';
-        const corridorColor = this.mapStyle?.corridorColor || '#cccccc'; // New color for corridors
+        const corridorColor = this.mapStyle?.corridorColor || '#cccccc';
         const gridColor = this.mapStyle?.gridColor || '#dddddd';
         const textColor = this.mapStyle?.textColor || '#000000';
         const useColors = this.mapStyle?.useColors !== undefined ? this.mapStyle.useColors : true;
@@ -29,16 +29,15 @@ export class SvgGenerator {
         svg += `<rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" fill="#000000" />`;
         
         // Create cell mappings for easier cell-type identification
-        const roomCells: Record<string, Room> = {};
-        const corridorCells: Record<string, boolean> = {};
-        const doorCells: Record<string, Door> = {};
+        const cellTypes: Record<string, 'room' | 'door' | 'corridor' | 'wall'> = {};
+        const doorLocations: Record<string, Door> = {};
         
         // Map room cells
         rooms.forEach(room => {
             for (let y = room.y; y < room.y + room.height; y++) {
                 for (let x = room.x; x < room.x + room.width; x++) {
                     const key = `${x},${y}`;
-                    roomCells[key] = room;
+                    cellTypes[key] = 'room';
                 }
             }
             
@@ -46,63 +45,36 @@ export class SvgGenerator {
             if (room.doors) {
                 room.doors.forEach(door => {
                     const key = `${door.x},${door.y}`;
-                    doorCells[key] = door;
+                    cellTypes[key] = 'door';
+                    doorLocations[key] = door;
                 });
             }
         });
         
-        // Map corridor cells (exclude room cells and doors)
-        for (let y = 0; y < gridSize; y++) {
-            for (let x = 0; x < gridSize; x++) {
-                if (grid[y][x]) { // If the cell is "open" (not a wall)
-                    const key = `${x},${y}`;
-                    // If it's not a room cell and not a door, it's a corridor
-                    if (!roomCells[key] && !doorCells[key]) {
-                        corridorCells[key] = true;
-                    }
-                }
-            }
-        
-            // Iterate through paths to rooms and draw corridors
-            rooms.forEach(room => {
-                if (room.pathsTo) {
-                    room.pathsTo.forEach(pathInfo => {
-                        // Draw the corridor path
-                        pathInfo.path.forEach(coord => {
-                            const key = `${coord.x},${coord.y}`;
-                            if (!roomCells[key] && !doorCells[key]) {
-                                corridorCells[key] = true;
-                            }
-                        });
+        // Map corridor and path cells
+        rooms.forEach(room => {
+            if (room.pathsTo) {
+                room.pathsTo.forEach(pathInfo => {
+                    pathInfo.path.forEach(coord => {
+                        const key = `${coord.x},${coord.y}`;
+                        // Only mark as corridor if not already a room or door
+                        if (!cellTypes[key]) {
+                            cellTypes[key] = 'corridor';
+                        }
                     });
-                }
-            });
-        }
-        
-        // Draw corridors with corridor color
-        svg += `<g>`;
-        Object.keys(corridorCells).forEach(key => {
-            const [x, y] = key.split(',').map(Number);
-            svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                         width="${cellSize}" height="${cellSize}" 
-                         fill="${corridorColor}" />`;
+                });
+            }
         });
-        svg += `</g>`;
-
-        // Separate pass for corridor rendering to ensure clear visualization
-        svg += `<g>`;
+        
+        // Mark remaining grid cells as walls
         for (let y = 0; y < gridSize; y++) {
             for (let x = 0; x < gridSize; x++) {
                 const key = `${x},${y}`;
-                // Explicitly check if cell is a corridor (in grid but not a room or door)
-                if (grid[y][x] && !roomCells[key] && !doorCells[key]) {
-                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
-                             width="${cellSize}" height="${cellSize}" 
-                             fill="${corridorColor}" />`;
+                if (!cellTypes[key]) {
+                    cellTypes[key] = grid[y][x] ? 'wall' : 'wall';
                 }
             }
         }
-        svg += `</g>`;
         
         // Draw room floors with color coding
         if (useColors) {
@@ -126,29 +98,53 @@ export class SvgGenerator {
             svg += `</g>`;
         }
         
-        // Draw doors
+        // Draw corridors and doors
+        svg += `<g>`;
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const key = `${x},${y}`;
+                if (cellTypes[key] === 'corridor' || cellTypes[key] === 'door') {
+                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${corridorColor}" />`;
+                }
+            }
+        }
+        svg += `</g>`;
+        
+        // Draw walls
+        svg += `<g>`;
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const key = `${x},${y}`;
+                if (cellTypes[key] === 'wall') {
+                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" 
+                             width="${cellSize}" height="${cellSize}" 
+                             fill="${wallColor}" />`;
+                }
+            }
+        }
+        svg += `</g>`;
+        
+        // Draw doors as lines
         if (doorStyle !== 'none') {
-            svg += `<g>`;
-            Object.entries(doorCells).forEach(([key, door]) => {
+            svg += `<g stroke="${wallColor}" stroke-width="2">`;
+            Object.entries(doorLocations).forEach(([key, door]) => {
                 const [x, y] = key.split(',').map(Number);
                 
-                if (doorStyle === 'line') {
-                    // Determine exact door position based on orientation
-                    if (door.isHorizontal) {
-                        // Horizontal door - align on vertical grid line separating room
-                        const lineX = x * cellSize + padding;
-                        const lineY1 = y * cellSize + padding;
-                        const lineY2 = lineY1 + cellSize;
-                        svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" 
-                                 stroke="${wallColor}" stroke-width="2" />`;
-                    } else {
-                        // Vertical door - align on horizontal grid line separating room
-                        const lineY = y * cellSize + padding;
-                        const lineX1 = x * cellSize + padding;
-                        const lineX2 = lineX1 + cellSize;
-                        svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" 
-                                 stroke="${wallColor}" stroke-width="2" />`;
-                    }
+                // Draw a line on the grid line separating the door cell
+                if (door.isHorizontal) {
+                    // Horizontal door (on top/bottom of room)
+                    const lineY = y * cellSize + padding;
+                    const lineX1 = x * cellSize + padding;
+                    const lineX2 = lineX1 + cellSize;
+                    svg += `<line x1="${lineX1}" y1="${lineY}" x2="${lineX2}" y2="${lineY}" />`;
+                } else {
+                    // Vertical door (on left/right of room)
+                    const lineX = x * cellSize + padding;
+                    const lineY1 = y * cellSize + padding;
+                    const lineY2 = lineY1 + cellSize;
+                    svg += `<line x1="${lineX}" y1="${lineY1}" x2="${lineX}" y2="${lineY2}" />`;
                 }
             });
             svg += `</g>`;
@@ -165,18 +161,6 @@ export class SvgGenerator {
             }
             svg += `</g>`;
         }
-        
-        // Draw walls (all cells that are not rooms, corridors, or doors)
-        svg += `<g>`;
-        for (let y = 0; y < gridSize; y++) {
-            for (let x = 0; x < gridSize; x++) {
-                const key = `${x},${y}`;
-                if (!grid[y][x] && !doorCells[key]) { // If it's a wall (not open) and not a door
-                    svg += `<rect x="${x * cellSize + padding}" y="${y * cellSize + padding}" width="${cellSize}" height="${cellSize}" fill="${wallColor}" />`;
-                }
-            }
-        }
-        svg += `</g>`;
         
         // Add room numbers
         svg += `<g font-family="Arial" font-size="${cellSize * 0.6}" text-anchor="middle" font-weight="bold" fill="${textColor}">`;

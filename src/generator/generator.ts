@@ -531,53 +531,59 @@ export class DungeonGenerator {
                 const targetRoom = rooms.find(r => r.id === pathInfo.roomId);
                 if (!targetRoom) return;
                 
-                // Find precise door locations where the path meets the room
-                const doorLocations = this.findPreciseDoorLocations(room, targetRoom, pathInfo.path, grid);
+                // Find door location on the grid line between the room and the path
+                const doorLocation = this.findDoorLocation(room, targetRoom, pathInfo.path);
                 
-                if (doorLocations.length > 0) {
-                    doorLocations.forEach(doorLocation => {
-                        // Determine door orientation more precisely
-                        const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
-                        
-                        // Add door to both rooms
-                        this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
-                        this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
-                    });
+                if (doorLocation) {
+                    // Determine door orientation 
+                    const isHorizontal = this.determineDoorOrientation(doorLocation, room, targetRoom);
+                    
+                    // Add door to both rooms
+                    this.addDoorToRoom(room, doorLocation, isHorizontal, targetRoom.id);
+                    this.addDoorToRoom(targetRoom, doorLocation, isHorizontal, room.id);
                 }
             });
         });
     }
     
-    private findPreciseDoorLocations(room1: Room, room2: Room, path: PathCoordinate[], grid: boolean[][]): PathCoordinate[] {
-        const doorLocations: PathCoordinate[] = [];
-        
-        // Check entry and exit points of the path
-        const entryPoint = this.findPathEntryPoint(room1, path);
-        const exitPoint = this.findPathEntryPoint(room2, path.slice().reverse());
-        
-        if (entryPoint) doorLocations.push(entryPoint);
-        if (exitPoint) doorLocations.push(exitPoint);
-        
-        return doorLocations;
-    }
-    
-    private findPathEntryPoint(room: Room, path: PathCoordinate[]): PathCoordinate | null {
+    private findDoorLocation(room1: Room, room2: Room, path: PathCoordinate[]): PathCoordinate | null {
+        // Find the point where the path connects to the room's edge
         for (const coord of path) {
-            if (this.isCoordinateOnRoomEdge(coord, room)) {
+            // Check if this coordinate is exactly on the edge of room1
+            if (this.isCoordinateOnRoomEdge(coord, room1)) {
                 return coord;
             }
         }
+        
         return null;
     }
     
     private isCoordinateOnRoomEdge(coord: PathCoordinate, room: Room): boolean {
-        return (
-            (coord.x === room.x - 1 || coord.x === room.x + room.width) &&
-            coord.y >= room.y && coord.y < room.y + room.height
-        ) || (
-            (coord.y === room.y - 1 || coord.y === room.y + room.height) &&
-            coord.x >= room.x && coord.x < room.x + room.width
-        );
+        // Top edge of room
+        if (coord.y === room.y - 1 && 
+            coord.x >= room.x && coord.x < room.x + room.width) {
+            return true;
+        }
+        
+        // Bottom edge of room
+        if (coord.y === room.y + room.height && 
+            coord.x >= room.x && coord.x < room.x + room.width) {
+            return true;
+        }
+        
+        // Left edge of room
+        if (coord.x === room.x - 1 && 
+            coord.y >= room.y && coord.y < room.y + room.height) {
+            return true;
+        }
+        
+        // Right edge of room
+        if (coord.x === room.x + room.width && 
+            coord.y >= room.y && coord.y < room.y + room.height) {
+            return true;
+        }
+        
+        return false;
     }
     
     private determineDoorOrientation(doorLocation: PathCoordinate, room1: Room, room2: Room): boolean {
@@ -672,90 +678,45 @@ export class DungeonGenerator {
      * Clean up the grid to eliminate dead-end corridors and fix intersections
      */
     private cleanupGrid(grid: boolean[][], rooms: Room[], gridSize: number): void {
-        // First, identify all corridor cells (not room cells)
-        const corridorCells: {x: number, y: number}[] = [];
-        for (let y = 0; y < gridSize; y++) {
-            for (let x = 0; x < gridSize; x++) {
-                if (!grid[y][x]) continue; // Skip walls
-                
-                // Check if this is a room
-                const isRoom = rooms.some(r => 
-                    x >= r.x && x < r.x + r.width && 
-                    y >= r.y && y < r.y + r.height
-                );
-                
-                if (!isRoom) {
-                    corridorCells.push({ x, y });
+        // Collect all path and room coordinates
+        const occupiedCells = new Set<string>();
+        
+        // Mark room cells
+        rooms.forEach(room => {
+            for (let y = room.y; y < room.y + room.height; y++) {
+                for (let x = room.x; x < room.x + room.width; x++) {
+                    occupiedCells.add(`${x},${y}`);
                 }
             }
-        }
+        });
         
-        // Directions for checking adjacency
-        const directions: Direction[] = [
-            { dx: 0, dy: -1 }, // North
-            { dx: 1, dy: 0 },  // East
-            { dx: 0, dy: 1 },  // South
-            { dx: -1, dy: 0 }  // West
-        ];
-        
-        // Identify dead-end corridors
-        let madeChanges = true;
-        let iterations = 0;
-        const maxIterations = 10; // Limit to prevent infinite loops
-        
-        while (madeChanges && iterations < maxIterations) {
-            madeChanges = false;
-            iterations++;
-            
-            // Check each corridor cell
-            for (let i = corridorCells.length - 1; i >= 0; i--) {
-                const cell = corridorCells[i];
-                
-                // Count adjacent open cells
-                let adjacentOpenCells = 0;
-                let adjacentRooms = 0;
-                let isDoorCell = false;
-                
-                // Check if this is a door cell
-                rooms.forEach(room => {
-                    if (room.doors) {
-                        if (room.doors.some(door => door.x === cell.x && door.y === cell.y)) {
-                            isDoorCell = true;
-                        }
-                    }
+        // Mark path cells
+        rooms.forEach(room => {
+            if (room.pathsTo) {
+                room.pathsTo.forEach(pathInfo => {
+                    pathInfo.path.forEach(coord => {
+                        const key = `${coord.x},${coord.y}`;
+                        occupiedCells.add(key);
+                    });
                 });
-                
-                // If it's a door, don't remove it
-                if (isDoorCell) continue;
-                
-                // Check adjacent cells
-                for (const dir of directions) {
-                    const nx = cell.x + dir.dx;
-                    const ny = cell.y + dir.dy;
-                    
-                    if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
-                        if (grid[ny][nx]) {
-                            adjacentOpenCells++;
-                            
-                            // Check if adjacent cell is a room
-                            const isAdjacentRoom = rooms.some(r => 
-                                nx >= r.x && nx < r.x + r.width && 
-                                ny >= r.y && ny < r.y + r.height
-                            );
-                            
-                            if (isAdjacentRoom) {
-                                adjacentRooms++;
-                            }
-                        }
-                    }
-                }
-                
-                // If this is a dead-end corridor (only one connection) and not leading to a room, remove it
-                if (adjacentOpenCells <= 1 && adjacentRooms === 0) {
-                    grid[cell.y][cell.x] = false; // Convert to wall
-                    corridorCells.splice(i, 1); // Remove from corridor cells
-                    madeChanges = true;
-                }
+            }
+        });
+        
+        // Mark door cells
+        rooms.forEach(room => {
+            if (room.doors) {
+                room.doors.forEach(door => {
+                    const key = `${door.x},${door.y}`;
+                    occupiedCells.add(key);
+                });
+            }
+        });
+        
+        // Update grid based on occupied cells
+        for (let y = 0; y < gridSize; y++) {
+            for (let x = 0; x < gridSize; x++) {
+                const key = `${x},${y}`;
+                grid[y][x] = occupiedCells.has(key);
             }
         }
     }
